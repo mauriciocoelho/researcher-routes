@@ -17,10 +17,10 @@
             >
 
             <EditText
-                android:id="@+id/match_name"
+                android:id="@+id/toolbar_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-thin"
+                android:textColor="@color/colorAccent"
                 android:hint="@string/search" />
 
 
