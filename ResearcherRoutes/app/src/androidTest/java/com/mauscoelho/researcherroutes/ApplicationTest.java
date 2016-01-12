@@ -1,11 +1,6 @@
 package com.mauscoelho.researcherroutes;
 
-import android.app.Application;
 import android.test.ApplicationTestCase;
-
-import com.mauscoelho.researcherroutes.network.interfaces.IAction;
-import com.mauscoelho.researcherroutes.network.models.Routes;
-import com.mauscoelho.researcherroutes.network.services.RouteService;
 
 import org.junit.Before;
 import org.junit.Test;

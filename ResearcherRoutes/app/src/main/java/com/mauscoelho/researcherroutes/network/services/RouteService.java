@@ -1,12 +1,9 @@
 package com.mauscoelho.researcherroutes.network.services;
 
 
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Base64;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -14,17 +11,19 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.mauscoelho.researcherroutes.App;
 import com.mauscoelho.researcherroutes.network.Endpoints;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
-import com.mauscoelho.researcherroutes.network.models.Routes;
+import com.mauscoelho.researcherroutes.network.models.Route;
+import com.mauscoelho.researcherroutes.network.parsers.RouteParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RouteService {
 
-    public void findRoutesByStopName(final IAction<Routes> callback, String stopName){
+    public void findRoutesByStopName(final IAction<List<Route>> callback, String stopName){
         JSONObject jsonObject = null;
 
         try {
@@ -37,12 +36,13 @@ public class RouteService {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        callback.OnCompleted(new Routes());
+                        RouteParser routeParser = new RouteParser();
+                        List<Route> routes = routeParser.parse(jsonObject);
+                        callback.OnCompleted(routes);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String erro = error.getMessage();
                 callback.OnError(null);
             }
         }) {

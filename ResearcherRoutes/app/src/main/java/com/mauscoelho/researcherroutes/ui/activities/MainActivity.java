@@ -5,10 +5,10 @@ import android.os.Bundle;
 
 import com.mauscoelho.researcherroutes.R;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
-import com.mauscoelho.researcherroutes.network.models.Routes;
+import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
 
-import org.json.JSONException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,19 +22,16 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-        _routeService.findRoutesByStopName(new IAction<Routes>() {
+        _routeService.findRoutesByStopName(new IAction<List<Route>>() {
             @Override
-            public void OnCompleted(Routes response) {
+            public void OnCompleted(List<Route> routes) {
 
             }
 
             @Override
-            public void OnError(Routes response) {
+            public void OnError(List<Route> routes) {
 
             }
         }, "lauro linhares");
-
-
     }
 }
