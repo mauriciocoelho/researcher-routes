@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void SetToolbar() {
         View view = toolbar.getRootView();
-        ImageView toolbar_search =  (ImageView)view.findViewById(R.id.toolbar_search);
-        toolbar_text = (EditText)view.findViewById(R.id.toolbar_text);
+        ImageView toolbar_search = (ImageView) view.findViewById(R.id.toolbar_search);
+        toolbar_text = (EditText) view.findViewById(R.id.toolbar_text);
         toolbar_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,19 +64,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void searchRoute(String stopName) {
-        if(!stopName.isEmpty()) {
+        if (!stopName.isEmpty()) {
             loader.setVisibility(View.VISIBLE);
             _routeService.findRoutesByStopName(new IAction<List<Route>>() {
                 @Override
                 public void OnCompleted(List<Route> routes) {
                     loader.setVisibility(View.GONE);
-                    routeAdapter = new RouteAdapter(routes, activity);
-                    rv_route.setAdapter(routeAdapter);
+
+                    if (routes.size() == 0 & routeAdapter != null)
+                        routeAdapter.clearData();
+                    else {
+                        routeAdapter = new RouteAdapter(routes, activity);
+                        rv_route.setAdapter(routeAdapter);
+                    }
                 }
 
                 @Override
                 public void OnError(List<Route> routes) {
                     loader.setVisibility(View.GONE);
+
                 }
             }, stopName);
         }

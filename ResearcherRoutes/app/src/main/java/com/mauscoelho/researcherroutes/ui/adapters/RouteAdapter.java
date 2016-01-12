@@ -15,11 +15,11 @@ import java.util.List;
 
 public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Route> _matches;
+    private List<Route> _routes;
     private Activity _fragment;
 
     public RouteAdapter(List<Route> matches, Activity fragment) {
-        this._matches = matches;
+        this._routes = matches;
         this._fragment = fragment;
     }
 
@@ -30,17 +30,28 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return _matches.size();
+        return _routes.size();
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        Route match = _matches.get(position);
+        Route match = _routes.get(position);
         int viewType = getItemViewType(position);
         switch (viewType) {
             case 0:
                 bindMatchItem((RouteViewHolder) viewHolder, match);
                 break;
+        }
+    }
+
+    public void clearData() {
+        int size = _routes.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                _routes.remove(0);
+            }
+
+            this.notifyItemRangeRemoved(0, size);
         }
     }
 
