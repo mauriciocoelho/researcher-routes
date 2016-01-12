@@ -21,7 +21,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        searchRoute("lauro linhares");
+    }
 
+    private void searchRoute(String stopName) {
         _routeService.findRoutesByStopName(new IAction<List<Route>>() {
             @Override
             public void OnCompleted(List<Route> routes) {
@@ -32,6 +35,6 @@ public class MainActivity extends AppCompatActivity {
             public void OnError(List<Route> routes) {
 
             }
-        }, "lauro linhares");
+        }, stopName);
     }
 }
