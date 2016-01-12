@@ -1,6 +1,13 @@
 package com.mauscoelho.researcherroutes.network.services;
 
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Base64;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -12,32 +19,53 @@ import com.mauscoelho.researcherroutes.network.models.Routes;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RouteService {
 
-    public void findRoutesByStopName(final IAction<Routes> callback, String stopName) {
-        JsonObjectRequest request = null;
+    public void findRoutesByStopName(final IAction<Routes> callback, String stopName){
+        JSONObject jsonObject = null;
+
         try {
-            final JSONObject jsonBody = new JSONObject("");
-
-            request = new JsonObjectRequest(Endpoints.FIND_ROUTES_BY_STOPNAME, jsonBody, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    //TODO parse routes
-                    callback.OnCompleted(new Routes());
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    callback.OnError(new Routes());
-                }
-            });
-
+            jsonObject = getJsonObject(stopName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        App.getsInstance().getmRequestQueue().add(request);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_ROUTES_BY_STOPNAME, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        callback.OnCompleted(new Routes());
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String erro = error.getMessage();
+                callback.OnError(null);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("X-AppGlu-Environment", "staging");
+                params.put("Authorization", "Basic V0tENE43WU1BMXVpTThWOkR0ZFR0ek1MUWxBMGhrMkMxWWk1cEx5VklsQVE2OA==");
+                return params;
+            }
+        };
 
+        App.getsInstance().getmRequestQueue().add(request);
     }
+
+    @NonNull
+    private JSONObject getJsonObject(String stopName) throws JSONException {
+        return new JSONObject("{\n" +
+                "\"params\": {\n" +
+                "\"stopName\": \"%" + stopName + "%\"\n" +
+                "}\n" +
+                "}");
+    }
+
 
 }
