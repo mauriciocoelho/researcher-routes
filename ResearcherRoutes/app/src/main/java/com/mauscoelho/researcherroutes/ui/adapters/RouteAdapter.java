@@ -2,6 +2,7 @@ package com.mauscoelho.researcherroutes.ui.adapters;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,17 +11,20 @@ import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
 import com.mauscoelho.researcherroutes.network.models.Route;
+import com.mauscoelho.researcherroutes.ui.activities.RouteDetail;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Route> _routes;
-    private Activity _fragment;
+    private Activity _activity;
 
-    public RouteAdapter(List<Route> matches, Activity fragment) {
+
+    public RouteAdapter(List<Route> matches, Activity activity) {
         this._routes = matches;
-        this._fragment = fragment;
+        this._activity = activity;
     }
 
     @Override
@@ -72,19 +76,33 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
     private void bindMatchItem(RouteViewHolder viewHolder, final Route route) {
-        RouteViewHolder routeViewHolder = viewHolder;
         viewHolder.route_shortName.setText(route.shortName);
+        viewHolder.route_longName.setText(route.longName);
+
+        viewHolder.route_detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(_activity ,RouteDetail.class);
+                intent.putExtra("route", (Serializable)route);
+                _activity.startActivity(intent);
+            }
+        });
 
     }
 
 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
         protected TextView route_shortName;
+        protected TextView route_longName;
+        protected TextView route_detail;
+
 
         public RouteViewHolder(View v) {
             super(v);
 
             route_shortName = (TextView)v.findViewById(R.id.route_shortName);
+            route_longName = (TextView)v.findViewById(R.id.route_longName);
+            route_detail = (TextView)v.findViewById(R.id.route_detail);
 
         }
     }

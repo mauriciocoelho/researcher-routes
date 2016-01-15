@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private RouteAdapter routeAdapter = null;
     private Toolbar toolbar;
     private EditText toolbar_text;
+    private TextView nothing_found;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         _linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv_route.setLayoutManager(_linearLayoutManager);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        nothing_found = (TextView)findViewById(R.id.nothing_found);
     }
 
     private void SetToolbar() {
@@ -65,15 +68,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void searchRoute(String stopName) {
         if (!stopName.isEmpty()) {
+            nothing_found.setVisibility(View.GONE);
             loader.setVisibility(View.VISIBLE);
             _routeService.findRoutesByStopName(new IAction<List<Route>>() {
                 @Override
                 public void OnCompleted(List<Route> routes) {
                     loader.setVisibility(View.GONE);
 
-                    if (routes.size() == 0 & routeAdapter != null)
+                    if (routes.size() == 0 & routeAdapter != null) {
                         routeAdapter.clearData();
+                        nothing_found.setVisibility(View.VISIBLE);
+                    }
                     else {
+                        nothing_found.setVisibility(View.GONE);
                         routeAdapter = new RouteAdapter(routes, activity);
                         rv_route.setAdapter(routeAdapter);
                     }
@@ -82,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void OnError(List<Route> routes) {
                     loader.setVisibility(View.GONE);
-
+                    nothing_found.setVisibility(View.GONE);
                 }
             }, stopName);
         }
