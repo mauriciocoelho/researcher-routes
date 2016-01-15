@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
+import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
@@ -31,6 +32,7 @@ public class RouteDetail extends AppCompatActivity {
         FindById();
         SetToolbar();
         findStopsByRouteId(route.id);
+        findDeparturesByRouteId(route.id);
     }
 
     private void FindById() {
@@ -61,6 +63,23 @@ public class RouteDetail extends AppCompatActivity {
 
                 @Override
                 public void OnError(List<StopsByRoute> stopsByRoutes) {
+
+                }
+            }, routeId);
+        }
+    }
+
+    private void findDeparturesByRouteId(int routeId) {
+        if (routeId != 0) {
+            _routeService.findDeparturesByRouteId(new IAction<List<DeparturesByRoute>>() {
+                @Override
+                public void OnCompleted(List<DeparturesByRoute> departuresByRoute) {
+
+
+                }
+
+                @Override
+                public void OnError(List<DeparturesByRoute> departuresByRoute) {
 
                 }
             }, routeId);

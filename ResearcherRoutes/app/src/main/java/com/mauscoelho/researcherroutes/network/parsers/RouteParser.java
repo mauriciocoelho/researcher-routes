@@ -1,6 +1,7 @@
 package com.mauscoelho.researcherroutes.network.parsers;
 
 
+import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
 
@@ -73,6 +74,37 @@ public class RouteParser {
         return stopsByRoutes;
 
     }
+
+    public List<DeparturesByRoute> findDeparturesByRouteId(JSONObject objRoute){
+
+        List<DeparturesByRoute> departuresByRoute = new ArrayList<>();
+
+        try {
+            JSONArray dataArray = objRoute.getJSONArray("rows");
+
+            for (int i = 0; i < dataArray.length(); i++) {
+
+                if (dataArray.isNull(i))
+                    continue;
+
+                JSONObject dataObj = dataArray.getJSONObject(i);
+
+                DeparturesByRoute departureByRoute = new DeparturesByRoute();
+                departureByRoute.id = dataObj.getInt("id");
+                departureByRoute.calendar = dataObj.getString("calendar");
+                departureByRoute.time = dataObj.getString("time");
+                departuresByRoute.add(departureByRoute);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return departuresByRoute;
+
+    }
+
+
 
 
 }
