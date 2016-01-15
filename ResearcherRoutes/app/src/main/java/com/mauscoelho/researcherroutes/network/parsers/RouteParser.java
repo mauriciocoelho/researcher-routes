@@ -2,6 +2,7 @@ package com.mauscoelho.researcherroutes.network.parsers;
 
 
 import com.mauscoelho.researcherroutes.network.models.Route;
+import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class RouteParser {
 
-    public List<Route> parse(JSONObject objRoute){
+    public List<Route> findRoutesByStopName(JSONObject objRoute){
 
         List<Route> routes = new ArrayList<>();
 
@@ -40,6 +41,36 @@ public class RouteParser {
         }
 
         return routes;
+
+    }
+
+    public List<StopsByRoute> findStopsByRouteId(JSONObject objRoute){
+
+        List<StopsByRoute> stopsByRoutes = new ArrayList<>();
+
+        try {
+            JSONArray dataArray = objRoute.getJSONArray("rows");
+
+            for (int i = 0; i < dataArray.length(); i++) {
+
+                if (dataArray.isNull(i))
+                    continue;
+
+                JSONObject dataObj = dataArray.getJSONObject(i);
+
+                StopsByRoute stopsByRoute = new StopsByRoute();
+                stopsByRoute.id = dataObj.getInt("id");
+                stopsByRoute.name = dataObj.getString("name");
+                stopsByRoute.sequence = dataObj.getInt("sequence");
+                stopsByRoute.route_id = dataObj.getInt("route_id");
+                stopsByRoutes.add(stopsByRoute);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return stopsByRoutes;
 
     }
 

@@ -5,26 +5,32 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
+import com.mauscoelho.researcherroutes.network.interfaces.IAction;
 import com.mauscoelho.researcherroutes.network.models.Route;
+import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
+import com.mauscoelho.researcherroutes.network.services.RouteService;
+
+import java.util.List;
 
 public class RouteDetail extends AppCompatActivity {
 
     private Toolbar toolbar;
     private Route route;
+    private RouteService _routeService = new RouteService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_detail);
-        route = (Route)getIntent().getSerializableExtra("route");
+        route = (Route) getIntent().getSerializableExtra("route");
 
         FindById();
         SetToolbar();
+        findStopsByRouteId(route.id);
     }
 
     private void FindById() {
@@ -42,6 +48,23 @@ public class RouteDetail extends AppCompatActivity {
                 finish();
             }
         });
-
     }
+
+    private void findStopsByRouteId(int routeId) {
+        if (routeId != 0) {
+            _routeService.findStopsByRouteId(new IAction<List<StopsByRoute>>() {
+                @Override
+                public void OnCompleted(List<StopsByRoute> stopsByRoutes) {
+
+
+                }
+
+                @Override
+                public void OnError(List<StopsByRoute> stopsByRoutes) {
+
+                }
+            }, routeId);
+        }
+    }
+
 }
