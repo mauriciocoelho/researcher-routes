@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
 import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
@@ -63,7 +64,7 @@ public class DeparturesByRouteAdapter extends RecyclerView.Adapter<RecyclerView.
         if (viewType == 0) {
             View view = LayoutInflater.
                     from(viewGroup.getContext()).
-                    inflate(R.layout.card_route, viewGroup, false);
+                    inflate(R.layout.card_departures_item, viewGroup, false);
 
 
             return new RouteViewHolder(view);
@@ -74,17 +75,18 @@ public class DeparturesByRouteAdapter extends RecyclerView.Adapter<RecyclerView.
 
 
     private void bindMatchItem(RouteViewHolder viewHolder, final DeparturesByRoute departuresByRoute) {
-
-
+        viewHolder.card_departures_item_text.setText(departuresByRoute.time);
     }
 
 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
 
+        protected TextView card_departures_item_text;
 
         public RouteViewHolder(View v) {
             super(v);
 
+            card_departures_item_text = (TextView)v.findViewById(R.id.card_departures_item_text);
 
         }
     }

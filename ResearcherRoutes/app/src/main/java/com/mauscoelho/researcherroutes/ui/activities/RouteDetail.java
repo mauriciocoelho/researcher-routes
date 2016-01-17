@@ -1,11 +1,15 @@
 package com.mauscoelho.researcherroutes.ui.activities;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
@@ -14,7 +18,9 @@ import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
+import com.mauscoelho.researcherroutes.ui.adapters.DeparturesByRouteAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RouteDetail extends AppCompatActivity {
@@ -22,6 +28,11 @@ public class RouteDetail extends AppCompatActivity {
     private Toolbar toolbar;
     private Route route;
     private RouteService _routeService = new RouteService();
+    private RecyclerView rv_weekday;
+    private RecyclerView rv_saturday;
+    private Activity activity = this;
+    private ProgressBar loader_weekday;
+    private ProgressBar loader_saturday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +47,22 @@ public class RouteDetail extends AppCompatActivity {
     }
 
     private void FindById() {
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        loader_weekday = (ProgressBar)findViewById(R.id.loader_weekday);
+        loader_saturday = (ProgressBar)findViewById(R.id.loader_saturday);
+
+        rv_weekday = (RecyclerView) findViewById(R.id.rv_weekday);
+        LinearLayoutManager _linearLayoutManagerWeekDay = new LinearLayoutManager(this);
+        _linearLayoutManagerWeekDay.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_weekday.setLayoutManager(_linearLayoutManagerWeekDay);
+
+        rv_saturday = (RecyclerView) findViewById(R.id.rv_saturday);
+        LinearLayoutManager _linearLayoutManagerSaturday = new LinearLayoutManager(this);
+        _linearLayoutManagerSaturday.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_saturday.setLayoutManager(_linearLayoutManagerSaturday);
+
+
     }
 
     private void SetToolbar() {
@@ -74,16 +100,47 @@ public class RouteDetail extends AppCompatActivity {
             _routeService.findDeparturesByRouteId(new IAction<List<DeparturesByRoute>>() {
                 @Override
                 public void OnCompleted(List<DeparturesByRoute> departuresByRoute) {
+                    if (departuresByRoute.size() > 0) {
+                        DeparturesByRouteAdapter weekdayAdapter = new DeparturesByRouteAdapter(getWeekdaysList(departuresByRoute), activity);
+                        rv_weekday.setAdapter(weekdayAdapter);
+                        loader_weekday.setVisibility(View.GONE);
+                        rv_weekday.setVisibility(View.VISIBLE);
 
-
+                        DeparturesByRouteAdapter saturdayAdapter = new DeparturesByRouteAdapter(getSaturdaysList(departuresByRoute), activity);
+                        rv_saturday.setAdapter(saturdayAdapter);
+                        loader_saturday.setVisibility(View.GONE);
+                        rv_saturday.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
                 public void OnError(List<DeparturesByRoute> departuresByRoute) {
-
+                    loader_weekday.setVisibility(View.GONE);
+                    loader_saturday.setVisibility(View.GONE);
                 }
             }, routeId);
         }
+    }
+
+
+    private List<DeparturesByRoute> getWeekdaysList(List<DeparturesByRoute> departuresByRoute) {
+        List<DeparturesByRoute> weekdayList = new ArrayList<>();
+        for (DeparturesByRoute item : departuresByRoute) {
+            if (item.calendar.contains("WEEKDAY"))
+                weekdayList.add(item);
+        }
+
+        return weekdayList;
+    }
+
+    private List<DeparturesByRoute> getSaturdaysList(List<DeparturesByRoute> departuresByRoute) {
+        List<DeparturesByRoute> saturdayList = new ArrayList<>();
+        for (DeparturesByRoute item : departuresByRoute) {
+            if (item.calendar.contains("SATURDAY"))
+                saturdayList.add(item);
+        }
+
+        return saturdayList;
     }
 
 }
