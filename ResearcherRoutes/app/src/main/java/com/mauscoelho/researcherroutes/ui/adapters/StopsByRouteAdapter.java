@@ -11,19 +11,20 @@ import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
 import com.mauscoelho.researcherroutes.network.models.Route;
+import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
 import com.mauscoelho.researcherroutes.ui.activities.RouteDetail;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class StopsByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Route> _routes;
+    private List<StopsByRoute> _stopsByRoute;
     private Activity _activity;
 
 
-    public RouteAdapter(List<Route> routes, Activity activity) {
-        this._routes = routes;
+    public StopsByRouteAdapter(List<Route> stopsByRoute, Activity activity) {
+        this._stopsByRoute = _stopsByRoute;
         this._activity = activity;
     }
 
@@ -34,25 +35,25 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return _routes.size();
+        return _stopsByRoute.size();
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        Route route = _routes.get(position);
+        StopsByRoute stopsByRoute = _stopsByRoute.get(position);
         int viewType = getItemViewType(position);
         switch (viewType) {
             case 0:
-                bindMatchItem((RouteViewHolder) viewHolder, route);
+                bindMatchItem((RouteViewHolder) viewHolder, stopsByRoute);
                 break;
         }
     }
 
     public void clearData() {
-        int size = _routes.size();
+        int size = _stopsByRoute.size();
         if (size > 0) {
             for (int i = 0; i < size; i++) {
-                _routes.remove(0);
+                _stopsByRoute.remove(0);
             }
 
             this.notifyItemRangeRemoved(0, size);
@@ -75,34 +76,18 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-    private void bindMatchItem(RouteViewHolder viewHolder, final Route route) {
-        viewHolder.route_shortName.setText(route.shortName);
-        viewHolder.route_longName.setText(route.longName);
+    private void bindMatchItem(RouteViewHolder viewHolder, final StopsByRoute stopsByRoute) {
 
-        viewHolder.route_detail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(_activity ,RouteDetail.class);
-                intent.putExtra("route", (Serializable)route);
-                _activity.startActivity(intent);
-            }
-        });
 
     }
 
 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
-        protected TextView route_shortName;
-        protected TextView route_longName;
-        protected TextView route_detail;
 
 
         public RouteViewHolder(View v) {
             super(v);
 
-            route_shortName = (TextView)v.findViewById(R.id.route_shortName);
-            route_longName = (TextView)v.findViewById(R.id.route_longName);
-            route_detail = (TextView)v.findViewById(R.id.route_detail);
 
         }
     }
