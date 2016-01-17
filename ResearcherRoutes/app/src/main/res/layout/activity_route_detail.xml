@@ -14,7 +14,7 @@
         android:id="@+id/card_departures"
         layout="@layout/card_departures" />
 
-    
+
 
 
 
