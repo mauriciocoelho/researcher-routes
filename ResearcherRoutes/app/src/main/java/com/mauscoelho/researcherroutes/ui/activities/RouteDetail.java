@@ -30,9 +30,11 @@ public class RouteDetail extends AppCompatActivity {
     private RouteService _routeService = new RouteService();
     private RecyclerView rv_weekday;
     private RecyclerView rv_saturday;
+    private RecyclerView rv_sunday;
     private Activity activity = this;
     private ProgressBar loader_weekday;
     private ProgressBar loader_saturday;
+    private ProgressBar loader_sunday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +53,22 @@ public class RouteDetail extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         loader_weekday = (ProgressBar)findViewById(R.id.loader_weekday);
         loader_saturday = (ProgressBar)findViewById(R.id.loader_saturday);
+        loader_sunday = (ProgressBar)findViewById(R.id.loader_sunday);
 
         rv_weekday = (RecyclerView) findViewById(R.id.rv_weekday);
-        LinearLayoutManager _linearLayoutManagerWeekDay = new LinearLayoutManager(this);
-        _linearLayoutManagerWeekDay.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_weekday.setLayoutManager(_linearLayoutManagerWeekDay);
+        LinearLayoutManager linearLayoutManagerWeekDay = new LinearLayoutManager(this);
+        linearLayoutManagerWeekDay.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_weekday.setLayoutManager(linearLayoutManagerWeekDay);
 
         rv_saturday = (RecyclerView) findViewById(R.id.rv_saturday);
-        LinearLayoutManager _linearLayoutManagerSaturday = new LinearLayoutManager(this);
-        _linearLayoutManagerSaturday.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_saturday.setLayoutManager(_linearLayoutManagerSaturday);
+        LinearLayoutManager linearLayoutManagerSaturday = new LinearLayoutManager(this);
+        linearLayoutManagerSaturday.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_saturday.setLayoutManager(linearLayoutManagerSaturday);
+
+        rv_sunday = (RecyclerView) findViewById(R.id.rv_sunday);
+        LinearLayoutManager linearLayoutManagerSunday = new LinearLayoutManager(this);
+        linearLayoutManagerSunday.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_sunday.setLayoutManager(linearLayoutManagerSunday);
 
 
     }
@@ -110,6 +118,11 @@ public class RouteDetail extends AppCompatActivity {
                         rv_saturday.setAdapter(saturdayAdapter);
                         loader_saturday.setVisibility(View.GONE);
                         rv_saturday.setVisibility(View.VISIBLE);
+
+                        DeparturesByRouteAdapter sundayAdapter = new DeparturesByRouteAdapter(getSundaysList(departuresByRoute), activity);
+                        rv_sunday.setAdapter(sundayAdapter);
+                        loader_sunday.setVisibility(View.GONE);
+                        rv_sunday.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -141,6 +154,16 @@ public class RouteDetail extends AppCompatActivity {
         }
 
         return saturdayList;
+    }
+
+    private List<DeparturesByRoute> getSundaysList(List<DeparturesByRoute> departuresByRoute) {
+        List<DeparturesByRoute> sundaysList = new ArrayList<>();
+        for (DeparturesByRoute item : departuresByRoute) {
+            if (item.calendar.contains("SUNDAY"))
+                sundaysList.add(item);
+        }
+
+        return sundaysList;
     }
 
 }
