@@ -3,27 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
+    app:layout_scrollFlags="scroll|enterAlways"
+    app:layout_collapseMode="pin"
     android:background="?attr/colorPrimary">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/toolbar_back"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:padding="7dp"
+        android:src="@drawable/ic_arrow_left"
+        android:clickable="true"
+        android:background="@drawable/btn_ripple_action" />
 
-
-        <ImageView
-            android:id="@+id/toolbar_search"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/btn_ripple_action"
-            android:clickable="true"
-            android:padding="9dp"
-            android:src="@drawable/ic_search" />
-
-
-    </RelativeLayout>
-
+    <TextView
+        android:id="@+id/toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:text="Title"
+        android:layout_marginLeft="32dp"
+        android:textSize="18dp"/>
 
 </android.support.v7.widget.Toolbar>

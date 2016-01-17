@@ -11,7 +11,8 @@ import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
 import com.mauscoelho.researcherroutes.network.models.Route;
-import com.mauscoelho.researcherroutes.ui.activities.RouteDetail;
+import com.mauscoelho.researcherroutes.ui.activities.StopsActivity;
+import com.mauscoelho.researcherroutes.ui.activities.TimesActivity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,8 +23,8 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private Activity _activity;
 
 
-    public RouteAdapter(List<Route> matches, Activity activity) {
-        this._routes = matches;
+    public RouteAdapter(List<Route> routes, Activity activity) {
+        this._routes = routes;
         this._activity = activity;
     }
 
@@ -39,11 +40,11 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        Route match = _routes.get(position);
+        Route route = _routes.get(position);
         int viewType = getItemViewType(position);
         switch (viewType) {
             case 0:
-                bindMatchItem((RouteViewHolder) viewHolder, match);
+                bindMatchItem((RouteViewHolder) viewHolder, route);
                 break;
         }
     }
@@ -79,10 +80,19 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         viewHolder.route_shortName.setText(route.shortName);
         viewHolder.route_longName.setText(route.longName);
 
-        viewHolder.route_detail.setOnClickListener(new View.OnClickListener() {
+        viewHolder.route_times.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(_activity ,RouteDetail.class);
+                Intent intent = new Intent(_activity, TimesActivity.class);
+                intent.putExtra("route", (Serializable) route);
+                _activity.startActivity(intent);
+            }
+        });
+
+        viewHolder.route_stops.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(_activity ,StopsActivity.class);
                 intent.putExtra("route", (Serializable)route);
                 _activity.startActivity(intent);
             }
@@ -94,7 +104,8 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
         protected TextView route_shortName;
         protected TextView route_longName;
-        protected TextView route_detail;
+        protected TextView route_times;
+        protected TextView route_stops;
 
 
         public RouteViewHolder(View v) {
@@ -102,7 +113,8 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             route_shortName = (TextView)v.findViewById(R.id.route_shortName);
             route_longName = (TextView)v.findViewById(R.id.route_longName);
-            route_detail = (TextView)v.findViewById(R.id.route_detail);
+            route_times = (TextView)v.findViewById(R.id.route_times);
+            route_stops = (TextView)v.findViewById(R.id.route_stops);
 
         }
     }

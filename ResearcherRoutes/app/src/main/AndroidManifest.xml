@@ -19,8 +19,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activities.RouteDetail">
-        </activity>
+        <activity android:name=".ui.activities.TimesActivity"/>
+        <activity android:name=".ui.activities.StopsActivity"/>
+
     </application>
 
 </manifest>

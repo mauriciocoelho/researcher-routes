@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void OnError(List<Route> routes) {
                     loader.setVisibility(View.GONE);
-                    nothing_found.setVisibility(View.GONE);
+                    nothing_found.setVisibility(View.VISIBLE);
                 }
             }, stopName);
         }

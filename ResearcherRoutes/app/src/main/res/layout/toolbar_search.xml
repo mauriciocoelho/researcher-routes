@@ -9,24 +9,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.TextInputLayout
+
+        <EditText
+            android:id="@+id/toolbar_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="@android:color/white"
+            android:layout_height="match_parent"
             android:layout_toLeftOf="@+id/toolbar_search"
-            >
-
-            <EditText
-                android:id="@+id/toolbar_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"
-                android:hint="@string/search"
-                android:singleLine="true"
-                />
-
-
-        </android.support.design.widget.TextInputLayout>
+            android:hint="@string/search"
+            android:singleLine="true"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorAccent"
+            />
 
 
         <ImageView
