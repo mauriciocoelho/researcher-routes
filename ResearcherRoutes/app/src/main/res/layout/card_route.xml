@@ -75,7 +75,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
@@ -84,15 +84,27 @@
             >
 
             <TextView
-                android:id="@+id/route_detail"
+                android:id="@+id/route_times"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimaryDark"
                 android:background="@drawable/btn_ripple_action"
-                android:text="@string/detail"
+                android:text="@string/times"
                 android:clickable="true"/>
 
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/route_stops"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:background="@drawable/btn_ripple_action"
+                android:text="@string/stops"
+                android:clickable="true"/>
+
+
+
+        </LinearLayout>
 
 
 

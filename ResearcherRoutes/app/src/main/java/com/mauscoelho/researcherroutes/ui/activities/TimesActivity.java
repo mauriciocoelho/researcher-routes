@@ -19,12 +19,16 @@ import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
 import com.mauscoelho.researcherroutes.ui.adapters.DeparturesByRouteAdapter;
+import com.mauscoelho.researcherroutes.ui.adapters.StopsByRouteAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RouteDetail extends AppCompatActivity {
+public class TimesActivity extends AppCompatActivity {
 
+    public static final String WEEKDAY = "WEEKDAY";
+    public static final String SATURDAY = "SATURDAY";
+    public static final String SUNDAY = "SUNDAY";
     private Toolbar toolbar;
     private Route route;
     private RouteService _routeService = new RouteService();
@@ -39,12 +43,11 @@ public class RouteDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_route_detail);
+        setContentView(R.layout.activity_times);
         route = (Route) getIntent().getSerializableExtra("route");
 
         FindById();
         SetToolbar();
-        findStopsByRouteId(route.id);
         findDeparturesByRouteId(route.id);
     }
 
@@ -70,7 +73,6 @@ public class RouteDetail extends AppCompatActivity {
         linearLayoutManagerSunday.setOrientation(LinearLayoutManager.VERTICAL);
         rv_sunday.setLayoutManager(linearLayoutManagerSunday);
 
-
     }
 
     private void SetToolbar() {
@@ -86,22 +88,6 @@ public class RouteDetail extends AppCompatActivity {
         });
     }
 
-    private void findStopsByRouteId(int routeId) {
-        if (routeId != 0) {
-            _routeService.findStopsByRouteId(new IAction<List<StopsByRoute>>() {
-                @Override
-                public void OnCompleted(List<StopsByRoute> stopsByRoutes) {
-
-
-                }
-
-                @Override
-                public void OnError(List<StopsByRoute> stopsByRoutes) {
-
-                }
-            }, routeId);
-        }
-    }
 
     private void findDeparturesByRouteId(int routeId) {
         if (routeId != 0) {
@@ -109,20 +95,7 @@ public class RouteDetail extends AppCompatActivity {
                 @Override
                 public void OnCompleted(List<DeparturesByRoute> departuresByRoute) {
                     if (departuresByRoute.size() > 0) {
-                        DeparturesByRouteAdapter weekdayAdapter = new DeparturesByRouteAdapter(getWeekdaysList(departuresByRoute), activity);
-                        rv_weekday.setAdapter(weekdayAdapter);
-                        loader_weekday.setVisibility(View.GONE);
-                        rv_weekday.setVisibility(View.VISIBLE);
-
-                        DeparturesByRouteAdapter saturdayAdapter = new DeparturesByRouteAdapter(getSaturdaysList(departuresByRoute), activity);
-                        rv_saturday.setAdapter(saturdayAdapter);
-                        loader_saturday.setVisibility(View.GONE);
-                        rv_saturday.setVisibility(View.VISIBLE);
-
-                        DeparturesByRouteAdapter sundayAdapter = new DeparturesByRouteAdapter(getSundaysList(departuresByRoute), activity);
-                        rv_sunday.setAdapter(sundayAdapter);
-                        loader_sunday.setVisibility(View.GONE);
-                        rv_sunday.setVisibility(View.VISIBLE);
+                        bindDepartures(departuresByRoute);
                     }
                 }
 
@@ -130,16 +103,34 @@ public class RouteDetail extends AppCompatActivity {
                 public void OnError(List<DeparturesByRoute> departuresByRoute) {
                     loader_weekday.setVisibility(View.GONE);
                     loader_saturday.setVisibility(View.GONE);
+                    loader_sunday.setVisibility(View.GONE);
                 }
             }, routeId);
         }
+    }
+
+    private void bindDepartures(List<DeparturesByRoute> departuresByRoute) {
+        DeparturesByRouteAdapter weekdayAdapter = new DeparturesByRouteAdapter(getWeekdaysList(departuresByRoute), activity);
+        rv_weekday.setAdapter(weekdayAdapter);
+        loader_weekday.setVisibility(View.GONE);
+        rv_weekday.setVisibility(View.VISIBLE);
+
+        DeparturesByRouteAdapter saturdayAdapter = new DeparturesByRouteAdapter(getSaturdaysList(departuresByRoute), activity);
+        rv_saturday.setAdapter(saturdayAdapter);
+        loader_saturday.setVisibility(View.GONE);
+        rv_saturday.setVisibility(View.VISIBLE);
+
+        DeparturesByRouteAdapter sundayAdapter = new DeparturesByRouteAdapter(getSundaysList(departuresByRoute), activity);
+        rv_sunday.setAdapter(sundayAdapter);
+        loader_sunday.setVisibility(View.GONE);
+        rv_sunday.setVisibility(View.VISIBLE);
     }
 
 
     private List<DeparturesByRoute> getWeekdaysList(List<DeparturesByRoute> departuresByRoute) {
         List<DeparturesByRoute> weekdayList = new ArrayList<>();
         for (DeparturesByRoute item : departuresByRoute) {
-            if (item.calendar.contains("WEEKDAY"))
+            if (item.calendar.contains(WEEKDAY))
                 weekdayList.add(item);
         }
 
@@ -149,7 +140,7 @@ public class RouteDetail extends AppCompatActivity {
     private List<DeparturesByRoute> getSaturdaysList(List<DeparturesByRoute> departuresByRoute) {
         List<DeparturesByRoute> saturdayList = new ArrayList<>();
         for (DeparturesByRoute item : departuresByRoute) {
-            if (item.calendar.contains("SATURDAY"))
+            if (item.calendar.contains(SATURDAY))
                 saturdayList.add(item);
         }
 
@@ -159,7 +150,7 @@ public class RouteDetail extends AppCompatActivity {
     private List<DeparturesByRoute> getSundaysList(List<DeparturesByRoute> departuresByRoute) {
         List<DeparturesByRoute> sundaysList = new ArrayList<>();
         for (DeparturesByRoute item : departuresByRoute) {
-            if (item.calendar.contains("SUNDAY"))
+            if (item.calendar.contains(SUNDAY))
                 sundaysList.add(item);
         }
 

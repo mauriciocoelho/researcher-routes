@@ -2,7 +2,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="@dimen/activity_vertical_margin"
-    android:layout_marginTop="4dp"
+    android:layout_marginTop="6dp"
     android:layout_marginBottom="6dp"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"
@@ -52,7 +52,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="300dp"
             android:orientation="vertical"
             android:layout_weight="1">
 
@@ -86,7 +86,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="300dp"
             android:orientation="vertical"
             android:layout_weight="1"
             >
@@ -121,7 +121,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="300dp"
             android:orientation="vertical"
             android:layout_weight="1"
             >

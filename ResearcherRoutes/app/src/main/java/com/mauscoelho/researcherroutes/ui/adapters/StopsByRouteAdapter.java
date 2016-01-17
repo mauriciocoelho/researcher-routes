@@ -2,7 +2,6 @@ package com.mauscoelho.researcherroutes.ui.adapters;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
-import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
-import com.mauscoelho.researcherroutes.ui.activities.RouteDetail;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class StopsByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -23,8 +19,8 @@ public class StopsByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Activity _activity;
 
 
-    public StopsByRouteAdapter(List<Route> stopsByRoute, Activity activity) {
-        this._stopsByRoute = _stopsByRoute;
+    public StopsByRouteAdapter(List<StopsByRoute> stopsByRoute, Activity activity) {
+        this._stopsByRoute = stopsByRoute;
         this._activity = activity;
     }
 
@@ -66,7 +62,7 @@ public class StopsByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (viewType == 0) {
             View view = LayoutInflater.
                     from(viewGroup.getContext()).
-                    inflate(R.layout.card_route, viewGroup, false);
+                    inflate(R.layout.card_stops, viewGroup, false);
 
 
             return new RouteViewHolder(view);
@@ -78,16 +74,19 @@ public class StopsByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private void bindMatchItem(RouteViewHolder viewHolder, final StopsByRoute stopsByRoute) {
 
+        viewHolder.card_stops_name.setText(stopsByRoute.name);
 
     }
 
 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
+        protected TextView card_stops_name;
 
 
         public RouteViewHolder(View v) {
             super(v);
 
+            card_stops_name = (TextView)v.findViewById(R.id.card_stops_name);
 
         }
     }
