@@ -12,6 +12,8 @@
 - Google Nexus 4 - 5.1.0 - API 22 - 768x1280
 - Google Nexus 5 - 6.0.0 - API 23 - 1080x1920
 
+### Apk
+- if you prefer to download the apk the link https://github.com/mauriciocoelho/researcher-routes/tree/dev/ResearcherRoutes/apk
 
 ### Screenshots
 
