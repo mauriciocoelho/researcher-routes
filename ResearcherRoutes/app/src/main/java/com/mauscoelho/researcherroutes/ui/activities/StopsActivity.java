@@ -92,5 +92,9 @@ public class StopsActivity extends AppCompatActivity {
         }
     }
 
+    public void showDirections(View v){
+        //TODO
+    }
+
 
 }
