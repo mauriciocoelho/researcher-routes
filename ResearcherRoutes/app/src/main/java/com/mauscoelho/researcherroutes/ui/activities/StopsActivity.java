@@ -2,6 +2,7 @@ package com.mauscoelho.researcherroutes.ui.activities;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -93,7 +94,8 @@ public class StopsActivity extends AppCompatActivity {
     }
 
     public void showDirections(View v){
-        //TODO
+        Intent intent = new Intent(activity, MapActivity.class);
+        startActivity(intent);
     }
 
 
