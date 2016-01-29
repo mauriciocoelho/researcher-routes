@@ -13,7 +13,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
+import com.mauscoelho.researcherroutes.network.interfaces.DaggerIRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
+import com.mauscoelho.researcherroutes.network.interfaces.IRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
@@ -24,11 +26,15 @@ import com.mauscoelho.researcherroutes.ui.adapters.StopsByRouteAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class StopsActivity extends AppCompatActivity {
+
+    @Inject
+    RouteService _routeService;
 
     private Toolbar toolbar;
     private Route route;
-    private RouteService _routeService = new RouteService();
     private RecyclerView rv_stops;
     private Activity activity = this;
     private ProgressBar loader_stops;
@@ -38,6 +44,9 @@ public class StopsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stops);
         route = (Route) getIntent().getSerializableExtra("route");
+
+        IRouteServiceComponent routeServiceComponent = DaggerIRouteServiceComponent.create();
+        routeServiceComponent.injectStopsActivity(this);
 
         FindById();
         SetToolbar();

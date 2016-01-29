@@ -23,7 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 public class RouteService {
+
+    @Inject
+    public RouteService() {
+
+    }
 
     public void findRoutesByStopName(final IAction<List<Route>> callback, String stopName){
         JSONObject jsonObject = null;

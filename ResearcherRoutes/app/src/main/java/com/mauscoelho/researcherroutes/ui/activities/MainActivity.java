@@ -13,20 +13,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
+import com.mauscoelho.researcherroutes.network.interfaces.DaggerIRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
+import com.mauscoelho.researcherroutes.network.interfaces.IRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
 import com.mauscoelho.researcherroutes.ui.adapters.RouteAdapter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class MainActivity extends AppCompatActivity {
 
+    @Inject
+    RouteService _routeService;
 
-    private RouteService _routeService = new RouteService();
     private ProgressBar loader;
     private RecyclerView rv_route;
-    private LinearLayoutManager _linearLayoutManager;
     private Activity activity = this;
     private RouteAdapter routeAdapter = null;
     private Toolbar toolbar;
@@ -39,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        IRouteServiceComponent routeServiceComponent = DaggerIRouteServiceComponent.create();
+        routeServiceComponent.injectMainActivity(this);
+
         FindById();
         SetToolbar();
     }
@@ -46,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private void FindById() {
         rv_route = (RecyclerView) findViewById(R.id.rv_route);
         loader = (ProgressBar) findViewById(R.id.loader);
-        _linearLayoutManager = new LinearLayoutManager(this);
-        _linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_route.setLayoutManager(_linearLayoutManager);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         nothing_found = (TextView)findViewById(R.id.nothing_found);
     }
