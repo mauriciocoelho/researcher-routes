@@ -13,7 +13,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
+import com.mauscoelho.researcherroutes.network.interfaces.DaggerIRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
+import com.mauscoelho.researcherroutes.network.interfaces.IRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
@@ -24,14 +26,18 @@ import com.mauscoelho.researcherroutes.ui.adapters.StopsByRouteAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class TimesActivity extends AppCompatActivity {
+
+    @Inject
+    RouteService _routeService;
 
     public static final String WEEKDAY = "WEEKDAY";
     public static final String SATURDAY = "SATURDAY";
     public static final String SUNDAY = "SUNDAY";
     private Toolbar toolbar;
     private Route route;
-    private RouteService _routeService = new RouteService();
     private RecyclerView rv_weekday;
     private RecyclerView rv_saturday;
     private RecyclerView rv_sunday;
@@ -46,6 +52,9 @@ public class TimesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_times);
         route = (Route) getIntent().getSerializableExtra("route");
 
+        IRouteServiceComponent routeServiceComponent = DaggerIRouteServiceComponent.create();
+        routeServiceComponent.injectTimesActivity(this);
+
         FindById();
         SetToolbar();
         findDeparturesByRouteId(route.id);
@@ -59,20 +68,8 @@ public class TimesActivity extends AppCompatActivity {
         loader_sunday = (ProgressBar)findViewById(R.id.loader_sunday);
 
         rv_weekday = (RecyclerView) findViewById(R.id.rv_weekday);
-        LinearLayoutManager linearLayoutManagerWeekDay = new LinearLayoutManager(this);
-        linearLayoutManagerWeekDay.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_weekday.setLayoutManager(linearLayoutManagerWeekDay);
-
         rv_saturday = (RecyclerView) findViewById(R.id.rv_saturday);
-        LinearLayoutManager linearLayoutManagerSaturday = new LinearLayoutManager(this);
-        linearLayoutManagerSaturday.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_saturday.setLayoutManager(linearLayoutManagerSaturday);
-
         rv_sunday = (RecyclerView) findViewById(R.id.rv_sunday);
-        LinearLayoutManager linearLayoutManagerSunday = new LinearLayoutManager(this);
-        linearLayoutManagerSunday.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_sunday.setLayoutManager(linearLayoutManagerSunday);
-
     }
 
     private void SetToolbar() {
@@ -111,19 +108,19 @@ public class TimesActivity extends AppCompatActivity {
 
     private void bindDepartures(List<DeparturesByRoute> departuresByRoute) {
         DeparturesByRouteAdapter weekdayAdapter = new DeparturesByRouteAdapter(getWeekdaysList(departuresByRoute), activity);
-        rv_weekday.setAdapter(weekdayAdapter);
-        loader_weekday.setVisibility(View.GONE);
-        rv_weekday.setVisibility(View.VISIBLE);
+        setRecyclers(rv_weekday, loader_weekday, weekdayAdapter);
 
         DeparturesByRouteAdapter saturdayAdapter = new DeparturesByRouteAdapter(getSaturdaysList(departuresByRoute), activity);
-        rv_saturday.setAdapter(saturdayAdapter);
-        loader_saturday.setVisibility(View.GONE);
-        rv_saturday.setVisibility(View.VISIBLE);
+        setRecyclers(rv_saturday, loader_saturday, saturdayAdapter);
 
         DeparturesByRouteAdapter sundayAdapter = new DeparturesByRouteAdapter(getSundaysList(departuresByRoute), activity);
-        rv_sunday.setAdapter(sundayAdapter);
-        loader_sunday.setVisibility(View.GONE);
-        rv_sunday.setVisibility(View.VISIBLE);
+        setRecyclers(rv_sunday, loader_sunday, sundayAdapter);
+    }
+
+    private void setRecyclers(RecyclerView recycler, ProgressBar loader, DeparturesByRouteAdapter adapter) {
+        recycler.setAdapter(adapter);
+        loader.setVisibility(View.GONE);
+        recycler.setVisibility(View.VISIBLE);
     }
 
 
