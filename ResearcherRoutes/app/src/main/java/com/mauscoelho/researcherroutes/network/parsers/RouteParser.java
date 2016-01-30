@@ -12,9 +12,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class RouteParser {
 
-    public List<Route> findRoutesByStopName(JSONObject objRoute){
+    @Inject
+    public RouteParser() {
+    }
+
+    public List<Route> parseRoutes(JSONObject objRoute){
 
         List<Route> routes = new ArrayList<>();
 
@@ -45,7 +51,7 @@ public class RouteParser {
 
     }
 
-    public List<Stop> findStopsByRouteId(JSONObject objRoute){
+    public List<Stop> parseStops(JSONObject objRoute){
 
         List<Stop> stops = new ArrayList<>();
 
@@ -75,7 +81,7 @@ public class RouteParser {
 
     }
 
-    public List<Time> findDeparturesByRouteId(JSONObject objRoute){
+    public List<Time> parseTimes(JSONObject objRoute){
 
         List<Time> time = new ArrayList<>();
 

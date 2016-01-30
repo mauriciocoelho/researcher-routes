@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         nothing_found.setVisibility(View.GONE);
         loader.setVisibility(View.VISIBLE);
 
-        routeService.findRoutesByStopName(new IAction<List<Route>>() {
+        routeService.getRoutes(new IAction<List<Route>>() {
             @Override
             public void OnCompleted(List<Route> routes) {
                 loader.setVisibility(View.GONE);

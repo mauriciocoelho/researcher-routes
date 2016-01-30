@@ -1,5 +1,6 @@
 package com.mauscoelho.researcherroutes.network.modules;
 
+import com.mauscoelho.researcherroutes.network.parsers.RouteParser;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
 
 import javax.inject.Singleton;
@@ -12,7 +13,7 @@ public class RouteServiceModule {
 
     @Provides @Singleton
     RouteService provideRouteService(){
-        return  new RouteService();
+        return  new RouteService(new RouteParser());
     }
 
 }

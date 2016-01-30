@@ -27,26 +27,23 @@ import javax.inject.Inject;
 
 public class RouteService {
 
-    @Inject
-    public RouteService() {
+    public static final String STOP_NAME = "stopName";
+    public static final String ROUTE_ID = "routeId";
 
+    RouteParser routeParser;
+
+    @Inject
+    public RouteService(RouteParser routeParser) {
+        this.routeParser = routeParser;
     }
 
-    public void findRoutesByStopName(final IAction<List<Route>> callback, String stopName){
-        JSONObject jsonObject = null;
-
-        try {
-            jsonObject = getJsonObjectStopName(stopName);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+    public void getRoutes(final IAction<List<Route>> callback, String stopName) {
+        JSONObject jsonObject = getJsonObject(STOP_NAME, stopName);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_ROUTES_BY_STOPNAME, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        RouteParser routeParser = new RouteParser();
-                        List<Route> routes = routeParser.findRoutesByStopName(jsonObject);
+                        List<Route> routes = routeParser.parseRoutes(jsonObject);
                         callback.OnCompleted(routes);
                     }
                 }, new Response.ErrorListener() {
@@ -64,21 +61,13 @@ public class RouteService {
         App.getsInstance().getmRequestQueue().add(request);
     }
 
-    public void findStopsByRouteId(final IAction<List<Stop>> callback, int routeId){
-        JSONObject jsonObject = null;
-
-        try {
-            jsonObject = getJsonObjectStopsByRoute(routeId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+    public void getStops(final IAction<List<Stop>> callback, int routeId) {
+        JSONObject jsonObject = getJsonObject(ROUTE_ID, String.valueOf(routeId));
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_STOPS_BY_ROUTEID, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        RouteParser routeParser = new RouteParser();
-                        List<Stop> routes = routeParser.findStopsByRouteId(jsonObject);
+                        List<Stop> routes = routeParser.parseStops(jsonObject);
 
                         callback.OnCompleted(routes);
                     }
@@ -97,22 +86,13 @@ public class RouteService {
         App.getsInstance().getmRequestQueue().add(request);
     }
 
-    public void findDeparturesByRouteId(final IAction<List<Time>> callback, int routeId){
-        JSONObject jsonObject = null;
-
-        try {
-            jsonObject = getJsonObjectDeparturesByRoute(routeId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+    public void getTimes(final IAction<List<Time>> callback, int routeId) {
+        JSONObject jsonObject = getJsonObject(ROUTE_ID, String.valueOf(routeId));
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_DEPARTURES_BY_ROUTEID, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        RouteParser routeParser = new RouteParser();
-                        List<Time> time = routeParser.findDeparturesByRouteId(jsonObject);
-
+                        List<Time> time = routeParser.parseTimes(jsonObject);
                         callback.OnCompleted(time);
                     }
                 }, new Response.ErrorListener() {
@@ -140,30 +120,17 @@ public class RouteService {
     }
 
     @NonNull
-    private JSONObject getJsonObjectStopName(String stopName) throws JSONException {
-        return new JSONObject("{\n" +
-                "\"params\": {\n" +
-                "\"stopName\": \"%" + stopName + "%\"\n" +
-                "}\n" +
-                "}");
-    }
-
-    @NonNull
-    private JSONObject getJsonObjectStopsByRoute(int routeId) throws JSONException {
-        return new JSONObject("{\n" +
-                "\"params\": {\n" +
-                "\"routeId\":" + routeId + "\n" +
-                "}\n" +
-                "}");
-    }
-
-    @NonNull
-    private JSONObject getJsonObjectDeparturesByRoute(int routeId) throws JSONException {
-        return new JSONObject("{\n" +
-                "\"params\": {\n" +
-                "\"routeId\":" + routeId + "\n" +
-                "}\n" +
-                "}");
+    private JSONObject getJsonObject(String value, String param)  {
+        try {
+            return new JSONObject("{\n" +
+                    "\"params\": {\n" +
+                    "\"" + param + "\": \"%" + value + "%\"\n" +
+                    "}\n" +
+                    "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new JSONObject();
     }
 
 }

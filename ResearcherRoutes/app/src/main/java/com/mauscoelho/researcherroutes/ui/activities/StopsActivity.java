@@ -70,7 +70,7 @@ public class StopsActivity extends AppCompatActivity {
     }
 
     private void findStopsByRouteId(int routeId) {
-        _routeService.findStopsByRouteId(new IAction<List<Stop>>() {
+        _routeService.getStops(new IAction<List<Stop>>() {
             @Override
             public void OnCompleted(List<Stop> stops) {
                 setRecycler(stops);

@@ -84,7 +84,7 @@ public class TimesActivity extends AppCompatActivity {
 
     private void findDeparturesByRouteId(int routeId) {
         if (routeId != 0) {
-            routeService.findDeparturesByRouteId(new IAction<List<Time>>() {
+            routeService.getTimes(new IAction<List<Time>>() {
                 @Override
                 public void OnCompleted(List<Time> time) {
                     if (time.size() > 0) {
