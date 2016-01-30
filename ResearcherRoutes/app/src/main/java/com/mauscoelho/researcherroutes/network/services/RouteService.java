@@ -27,9 +27,6 @@ import javax.inject.Inject;
 
 public class RouteService {
 
-    public static final String STOP_NAME = "stopName";
-    public static final String ROUTE_ID = "routeId";
-
     ParserCommand parserCommand;
 
     @Inject
@@ -38,7 +35,7 @@ public class RouteService {
     }
 
     public void getRoutes(final IAction<List<Route>> callback, String stopName) {
-        JSONObject jsonObject = getJsonObject(STOP_NAME, stopName);
+        JSONObject jsonObject = getJsonObjectByStopName(stopName);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_ROUTES_BY_STOPNAME, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -63,7 +60,7 @@ public class RouteService {
     }
 
     public void getStops(final IAction<List<Stop>> callback, int routeId) {
-        JSONObject jsonObject = getJsonRouteId(ROUTE_ID, String.valueOf(routeId));
+        JSONObject jsonObject = getJsonRouteId(routeId);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_STOPS_BY_ROUTEID, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -87,7 +84,7 @@ public class RouteService {
     }
 
     public void getTimes(final IAction<List<Time>> callback, int routeId) {
-        JSONObject jsonObject = getJsonRouteId(ROUTE_ID, String.valueOf(routeId));
+        JSONObject jsonObject = getJsonRouteId(routeId);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_DEPARTURES_BY_ROUTEID, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -120,11 +117,11 @@ public class RouteService {
     }
 
     @NonNull
-    private JSONObject getJsonObject(String param, String value)  {
+    private JSONObject getJsonObjectByStopName(String value)  {
         try {
             return new JSONObject("{\n" +
                     "\"params\": {\n" +
-                    "\"" + param + "\": \"%" + value + "%\"\n" +
+                    "\"stopName\": \"%" + value + "%\"\n" +
                     "}\n" +
                     "}");
         } catch (JSONException e) {
@@ -134,11 +131,11 @@ public class RouteService {
     }
 
     @NonNull
-    private JSONObject getJsonRouteId(String param, String value)  {
+    private JSONObject getJsonRouteId(int value)  {
         try {
             return new JSONObject("{\n" +
                     "\"params\": {\n" +
-                    "\"" + param + "\": "+ value +" \n" +
+                    "\"routeId\": "+ value +" \n" +
                     "}\n" +
                     "}");
         } catch (JSONException e) {
