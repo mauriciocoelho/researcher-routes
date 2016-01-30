@@ -1,12 +1,9 @@
 package com.mauscoelho.researcherroutes.ui.activities;
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -17,14 +14,10 @@ import com.mauscoelho.researcherroutes.network.Extras;
 import com.mauscoelho.researcherroutes.network.interfaces.DaggerIRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
 import com.mauscoelho.researcherroutes.network.interfaces.IRouteServiceComponent;
-import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
+import com.mauscoelho.researcherroutes.network.models.Time;
 import com.mauscoelho.researcherroutes.network.models.Route;
-import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
 import com.mauscoelho.researcherroutes.ui.adapters.DeparturesByRouteAdapter;
-import com.mauscoelho.researcherroutes.ui.adapters.StopsByRouteAdapter;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,16 +84,16 @@ public class TimesActivity extends AppCompatActivity {
 
     private void findDeparturesByRouteId(int routeId) {
         if (routeId != 0) {
-            routeService.findDeparturesByRouteId(new IAction<List<DeparturesByRoute>>() {
+            routeService.findDeparturesByRouteId(new IAction<List<Time>>() {
                 @Override
-                public void OnCompleted(List<DeparturesByRoute> departuresByRoute) {
-                    if (departuresByRoute.size() > 0) {
-                        bindDepartures(departuresByRoute);
+                public void OnCompleted(List<Time> time) {
+                    if (time.size() > 0) {
+                        bindDepartures(time);
                     }
                 }
 
                 @Override
-                public void OnError(List<DeparturesByRoute> departuresByRoute) {
+                public void OnError(List<Time> time) {
                     loader_weekday.setVisibility(View.GONE);
                     loader_saturday.setVisibility(View.GONE);
                     loader_sunday.setVisibility(View.GONE);
@@ -109,10 +102,10 @@ public class TimesActivity extends AppCompatActivity {
         }
     }
 
-    private void bindDepartures(List<DeparturesByRoute> departuresByRoute) {
-        setRecyclers(rv_weekday, loader_weekday, new DeparturesByRouteAdapter(getList(departuresByRoute, WEEKDAY)));
-        setRecyclers(rv_saturday, loader_saturday, new DeparturesByRouteAdapter(getList(departuresByRoute, SATURDAY)));
-        setRecyclers(rv_sunday, loader_sunday, new DeparturesByRouteAdapter(getList(departuresByRoute, SUNDAY)));
+    private void bindDepartures(List<Time> time) {
+        setRecyclers(rv_weekday, loader_weekday, new DeparturesByRouteAdapter(getList(time, WEEKDAY)));
+        setRecyclers(rv_saturday, loader_saturday, new DeparturesByRouteAdapter(getList(time, SATURDAY)));
+        setRecyclers(rv_sunday, loader_sunday, new DeparturesByRouteAdapter(getList(time, SUNDAY)));
     }
 
     private void setRecyclers(RecyclerView recycler, ProgressBar loader, DeparturesByRouteAdapter adapter) {
@@ -121,14 +114,14 @@ public class TimesActivity extends AppCompatActivity {
         recycler.setVisibility(View.VISIBLE);
     }
 
-    private List<DeparturesByRoute> getList(List<DeparturesByRoute> departuresByRoute, String contains) {
-        List<DeparturesByRoute> departuresByRouteList = new ArrayList<>();
-        for (DeparturesByRoute item : departuresByRoute) {
+    private List<Time> getList(List<Time> time, String contains) {
+        List<Time> timeList = new ArrayList<>();
+        for (Time item : time) {
             if (item.calendar.contains(contains))
-                departuresByRouteList.add(item);
+                timeList.add(item);
         }
 
-        return departuresByRouteList;
+        return timeList;
     }
 
 }

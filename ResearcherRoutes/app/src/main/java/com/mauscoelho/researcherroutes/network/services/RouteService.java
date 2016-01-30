@@ -11,9 +11,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.mauscoelho.researcherroutes.App;
 import com.mauscoelho.researcherroutes.network.Endpoints;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
-import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
+import com.mauscoelho.researcherroutes.network.models.Time;
 import com.mauscoelho.researcherroutes.network.models.Route;
-import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
+import com.mauscoelho.researcherroutes.network.models.Stop;
 import com.mauscoelho.researcherroutes.network.parsers.RouteParser;
 
 import org.json.JSONException;
@@ -64,7 +64,7 @@ public class RouteService {
         App.getsInstance().getmRequestQueue().add(request);
     }
 
-    public void findStopsByRouteId(final IAction<List<StopsByRoute>> callback, int routeId){
+    public void findStopsByRouteId(final IAction<List<Stop>> callback, int routeId){
         JSONObject jsonObject = null;
 
         try {
@@ -78,7 +78,7 @@ public class RouteService {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
                         RouteParser routeParser = new RouteParser();
-                        List<StopsByRoute> routes = routeParser.findStopsByRouteId(jsonObject);
+                        List<Stop> routes = routeParser.findStopsByRouteId(jsonObject);
 
                         callback.OnCompleted(routes);
                     }
@@ -97,7 +97,7 @@ public class RouteService {
         App.getsInstance().getmRequestQueue().add(request);
     }
 
-    public void findDeparturesByRouteId(final IAction<List<DeparturesByRoute>> callback, int routeId){
+    public void findDeparturesByRouteId(final IAction<List<Time>> callback, int routeId){
         JSONObject jsonObject = null;
 
         try {
@@ -111,9 +111,9 @@ public class RouteService {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
                         RouteParser routeParser = new RouteParser();
-                        List<DeparturesByRoute> departuresByRoute = routeParser.findDeparturesByRouteId(jsonObject);
+                        List<Time> time = routeParser.findDeparturesByRouteId(jsonObject);
 
-                        callback.OnCompleted(departuresByRoute);
+                        callback.OnCompleted(time);
                     }
                 }, new Response.ErrorListener() {
             @Override

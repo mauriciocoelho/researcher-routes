@@ -1,9 +1,9 @@
 package com.mauscoelho.researcherroutes.network.parsers;
 
 
-import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
+import com.mauscoelho.researcherroutes.network.models.Time;
 import com.mauscoelho.researcherroutes.network.models.Route;
-import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
+import com.mauscoelho.researcherroutes.network.models.Stop;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,9 +45,9 @@ public class RouteParser {
 
     }
 
-    public List<StopsByRoute> findStopsByRouteId(JSONObject objRoute){
+    public List<Stop> findStopsByRouteId(JSONObject objRoute){
 
-        List<StopsByRoute> stopsByRoutes = new ArrayList<>();
+        List<Stop> stops = new ArrayList<>();
 
         try {
             JSONArray dataArray = objRoute.getJSONArray("rows");
@@ -59,25 +59,25 @@ public class RouteParser {
 
                 JSONObject dataObj = dataArray.getJSONObject(i);
 
-                StopsByRoute stopsByRoute = new StopsByRoute();
-                stopsByRoute.id = dataObj.getInt("id");
-                stopsByRoute.name = dataObj.getString("name");
-                stopsByRoute.sequence = dataObj.getInt("sequence");
-                stopsByRoute.route_id = dataObj.getInt("route_id");
-                stopsByRoutes.add(stopsByRoute);
+                Stop stop = new Stop();
+                stop.id = dataObj.getInt("id");
+                stop.name = dataObj.getString("name");
+                stop.sequence = dataObj.getInt("sequence");
+                stop.route_id = dataObj.getInt("route_id");
+                stops.add(stop);
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return stopsByRoutes;
+        return stops;
 
     }
 
-    public List<DeparturesByRoute> findDeparturesByRouteId(JSONObject objRoute){
+    public List<Time> findDeparturesByRouteId(JSONObject objRoute){
 
-        List<DeparturesByRoute> departuresByRoute = new ArrayList<>();
+        List<Time> time = new ArrayList<>();
 
         try {
             JSONArray dataArray = objRoute.getJSONArray("rows");
@@ -89,18 +89,18 @@ public class RouteParser {
 
                 JSONObject dataObj = dataArray.getJSONObject(i);
 
-                DeparturesByRoute departureByRoute = new DeparturesByRoute();
+                Time departureByRoute = new Time();
                 departureByRoute.id = dataObj.getInt("id");
                 departureByRoute.calendar = dataObj.getString("calendar");
                 departureByRoute.time = dataObj.getString("time");
-                departuresByRoute.add(departureByRoute);
+                time.add(departureByRoute);
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return departuresByRoute;
+        return time;
 
     }
 

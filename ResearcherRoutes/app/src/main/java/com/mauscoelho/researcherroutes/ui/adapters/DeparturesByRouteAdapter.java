@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
-import com.mauscoelho.researcherroutes.network.models.DeparturesByRoute;
+import com.mauscoelho.researcherroutes.network.models.Time;
 
 import java.util.List;
 
@@ -17,10 +17,10 @@ import butterknife.InjectView;
 
 public class DeparturesByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<DeparturesByRoute> _departuresByRoute;
+    private List<Time> _time;
 
-    public DeparturesByRouteAdapter(List<DeparturesByRoute> departuresByRoutes) {
-        this._departuresByRoute = departuresByRoutes;
+    public DeparturesByRouteAdapter(List<Time> times) {
+        this._time = times;
     }
 
     @Override
@@ -30,16 +30,16 @@ public class DeparturesByRouteAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemCount() {
-        return _departuresByRoute.size();
+        return _time.size();
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        DeparturesByRoute departuresByRoute = _departuresByRoute.get(position);
+        Time time = _time.get(position);
         int viewType = getItemViewType(position);
         switch (viewType) {
             case 0:
-                bindMatchItem((RouteViewHolder) viewHolder, departuresByRoute);
+                bindMatchItem((RouteViewHolder) viewHolder, time);
                 break;
         }
     }
@@ -53,8 +53,8 @@ public class DeparturesByRouteAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
 
-    private void bindMatchItem(RouteViewHolder viewHolder, final DeparturesByRoute departuresByRoute) {
-        viewHolder.card_departures_item_text.setText(departuresByRoute.time);
+    private void bindMatchItem(RouteViewHolder viewHolder, final Time time) {
+        viewHolder.card_departures_item_text.setText(time.time);
     }
 
 

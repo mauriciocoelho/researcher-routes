@@ -9,6 +9,4 @@ public class Route implements Serializable {
     public String longName;
     public String lastModifiedDate;
     public int agencyId;
-
-
 }

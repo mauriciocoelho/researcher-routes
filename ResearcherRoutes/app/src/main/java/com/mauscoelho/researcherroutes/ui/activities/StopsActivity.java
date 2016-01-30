@@ -15,7 +15,7 @@ import com.mauscoelho.researcherroutes.network.interfaces.DaggerIRouteServiceCom
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
 import com.mauscoelho.researcherroutes.network.interfaces.IRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.models.Route;
-import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
+import com.mauscoelho.researcherroutes.network.models.Stop;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
 import com.mauscoelho.researcherroutes.ui.adapters.StopsByRouteAdapter;
 
@@ -70,21 +70,21 @@ public class StopsActivity extends AppCompatActivity {
     }
 
     private void findStopsByRouteId(int routeId) {
-        _routeService.findStopsByRouteId(new IAction<List<StopsByRoute>>() {
+        _routeService.findStopsByRouteId(new IAction<List<Stop>>() {
             @Override
-            public void OnCompleted(List<StopsByRoute> stopsByRoutes) {
-                setRecycler(stopsByRoutes);
+            public void OnCompleted(List<Stop> stops) {
+                setRecycler(stops);
             }
 
             @Override
-            public void OnError(List<StopsByRoute> stopsByRoutes) {
+            public void OnError(List<Stop> stops) {
                 loader_stops.setVisibility(View.GONE);
             }
         }, routeId);
     }
 
-    private void setRecycler(List<StopsByRoute> stopsByRoutes) {
-        rv_stops.setAdapter(new StopsByRouteAdapter(stopsByRoutes));
+    private void setRecycler(List<Stop> stops) {
+        rv_stops.setAdapter(new StopsByRouteAdapter(stops));
         loader_stops.setVisibility(View.GONE);
         rv_stops.setVisibility(View.VISIBLE);
     }
