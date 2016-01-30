@@ -15,23 +15,24 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class ParserCommand {
+public class Parser {
 
-    RoutesParser routesParser;
-    StopsParser stopsParser;
-    TimesParser timesParser;
+    public static final String ROWS = "rows";
+    private RoutesParserCommand routesParserCommand;
+    private StopsParserCommand stopsParserCommand;
+    private TimesParserCommand timesParserCommand;
 
     @Inject
-    public ParserCommand(RoutesParser routesParser, StopsParser stopsParser, TimesParser timesParser) {
-        this.routesParser = routesParser;
-        this.stopsParser = stopsParser;
-        this.timesParser = timesParser;
+    public Parser(RoutesParserCommand routesParserCommand, StopsParserCommand stopsParserCommand, TimesParserCommand timesParserCommand) {
+        this.routesParserCommand = routesParserCommand;
+        this.stopsParserCommand = stopsParserCommand;
+        this.timesParserCommand = timesParserCommand;
     }
 
     private List<Object> execute(JSONObject objRoute, IParserCommand parserCommand) {
         List<Object> objectList = new ArrayList<>();
         try {
-            JSONArray dataArray = objRoute.getJSONArray("rows");
+            JSONArray dataArray = objRoute.getJSONArray(ROWS);
 
             for (int i = 0; i < dataArray.length(); i++) {
                 if (dataArray.isNull(i))
@@ -46,16 +47,16 @@ public class ParserCommand {
         return objectList;
     }
 
-    public List<Route> executeRoutes(JSONObject objRoute) {
-        return (List<Route>) (Object) execute(objRoute, routesParser);
+    public List<Route> parseRoutes(JSONObject objRoute) {
+        return (List<Route>) (Object) execute(objRoute, routesParserCommand);
     }
 
-    public List<Stop> executeStops(JSONObject objRoute) {
-        return (List<Stop>) (Object) execute(objRoute, stopsParser);
+    public List<Stop> parseStops(JSONObject objRoute) {
+        return (List<Stop>) (Object) execute(objRoute, stopsParserCommand);
     }
 
-    public List<Time> executeTimes(JSONObject objRoute) {
-        return (List<Time>) (Object) execute(objRoute, timesParser);
+    public List<Time> parseTimes(JSONObject objRoute) {
+        return (List<Time>) (Object) execute(objRoute, timesParserCommand);
     }
 
 }

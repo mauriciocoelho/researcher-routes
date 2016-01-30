@@ -14,7 +14,7 @@ import com.mauscoelho.researcherroutes.network.interfaces.IAction;
 import com.mauscoelho.researcherroutes.network.models.Time;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.Stop;
-import com.mauscoelho.researcherroutes.network.parsers.ParserCommand;
+import com.mauscoelho.researcherroutes.network.parsers.Parser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,10 +27,10 @@ import javax.inject.Inject;
 
 public class RouteService {
 
-    ParserCommand parserCommand;
+    private Parser parserCommand;
 
     @Inject
-    public RouteService(ParserCommand parserCommand) {
+    public RouteService(Parser parserCommand) {
         this.parserCommand = parserCommand;
     }
 
@@ -41,7 +41,7 @@ public class RouteService {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
 
-                        List<Route> routes = parserCommand.executeRoutes(jsonObject);
+                        List<Route> routes = parserCommand.parseRoutes(jsonObject);
                         callback.OnCompleted(routes);
                     }
                 }, new Response.ErrorListener() {
@@ -65,7 +65,7 @@ public class RouteService {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        List<Stop> routes = parserCommand.executeStops(jsonObject);
+                        List<Stop> routes = parserCommand.parseStops(jsonObject);
                         callback.OnCompleted(routes);
                     }
                 }, new Response.ErrorListener() {
@@ -89,7 +89,7 @@ public class RouteService {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        List<Time> time = parserCommand.executeTimes(jsonObject);
+                        List<Time> time = parserCommand.parseTimes(jsonObject);
                         callback.OnCompleted(time);
                     }
                 }, new Response.ErrorListener() {

@@ -7,7 +7,7 @@ import com.mauscoelho.researcherroutes.network.models.Time;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TimesParser implements IParserCommand{
+public class TimesParserCommand implements IParserCommand{
 
     @Override
     public Object executeParser(JSONObject dataObj) {

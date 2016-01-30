@@ -7,9 +7,7 @@ import com.mauscoelho.researcherroutes.network.models.Route;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
-public class RoutesParser implements IParserCommand {
+public class RoutesParserCommand implements IParserCommand {
     @Override
     public Object executeParser(JSONObject dataObj) {
         Route route = new Route();

@@ -7,7 +7,7 @@ import com.mauscoelho.researcherroutes.network.models.Stop;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class StopsParser implements IParserCommand{
+public class StopsParserCommand implements IParserCommand{
 
     @Override
     public Object executeParser(JSONObject dataObj) {
