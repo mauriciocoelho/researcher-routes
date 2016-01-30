@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
+import com.mauscoelho.researcherroutes.network.Extras;
 import com.mauscoelho.researcherroutes.network.interfaces.DaggerIRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
 import com.mauscoelho.researcherroutes.network.interfaces.IRouteServiceComponent;
@@ -23,72 +24,74 @@ import com.mauscoelho.researcherroutes.network.services.RouteService;
 import com.mauscoelho.researcherroutes.ui.adapters.DeparturesByRouteAdapter;
 import com.mauscoelho.researcherroutes.ui.adapters.StopsByRouteAdapter;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class TimesActivity extends AppCompatActivity {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
-    @Inject
-    RouteService _routeService;
+public class TimesActivity extends AppCompatActivity {
 
     public static final String WEEKDAY = "WEEKDAY";
     public static final String SATURDAY = "SATURDAY";
     public static final String SUNDAY = "SUNDAY";
-    private Toolbar toolbar;
+
+    @Inject
+    RouteService routeService;
+    @InjectView(R.id.rv_weekday)
+    RecyclerView rv_weekday;
+    @InjectView(R.id.rv_saturday)
+    RecyclerView rv_saturday;
+    @InjectView(R.id.rv_sunday)
+    RecyclerView rv_sunday;
+    @InjectView(R.id.loader_weekday)
+    ProgressBar loader_weekday;
+    @InjectView(R.id.loader_saturday)
+    ProgressBar loader_saturday;
+    @InjectView(R.id.loader_sunday)
+    ProgressBar loader_sunday;
+    @InjectView(R.id.toolbar_title)
+    TextView toolbar_title;
+
     private Route route;
-    private RecyclerView rv_weekday;
-    private RecyclerView rv_saturday;
-    private RecyclerView rv_sunday;
-    private Activity activity = this;
-    private ProgressBar loader_weekday;
-    private ProgressBar loader_saturday;
-    private ProgressBar loader_sunday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_times);
-        route = (Route) getIntent().getSerializableExtra("route");
-
-        IRouteServiceComponent routeServiceComponent = DaggerIRouteServiceComponent.create();
-        routeServiceComponent.injectTimesActivity(this);
-
-        FindById();
-        SetToolbar();
+        route = (Route) getIntent().getSerializableExtra(Extras.ROUTE_OBJECT);
+        injectDependencies();
+        injectViews();
+        setTitle();
         findDeparturesByRouteId(route.id);
     }
 
-    private void FindById() {
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        loader_weekday = (ProgressBar)findViewById(R.id.loader_weekday);
-        loader_saturday = (ProgressBar)findViewById(R.id.loader_saturday);
-        loader_sunday = (ProgressBar)findViewById(R.id.loader_sunday);
-
-        rv_weekday = (RecyclerView) findViewById(R.id.rv_weekday);
-        rv_saturday = (RecyclerView) findViewById(R.id.rv_saturday);
-        rv_sunday = (RecyclerView) findViewById(R.id.rv_sunday);
+    private void injectDependencies() {
+        IRouteServiceComponent routeServiceComponent = DaggerIRouteServiceComponent.create();
+        routeServiceComponent.injectTimesActivity(this);
     }
 
-    private void SetToolbar() {
-        View view = toolbar.getRootView();
-        ImageView toolbar_back = (ImageView) view.findViewById(R.id.toolbar_back);
-        TextView toolbar_title = (TextView) view.findViewById(R.id.toolbar_title);
+    private void injectViews() {
+        ButterKnife.inject(this);
+    }
+
+    private void setTitle() {
         toolbar_title.setText(route.longName);
-        toolbar_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
+    @OnClick(R.id.toolbar_back)
+    public void backActivity(ImageView toolbar_back) {
+        finish();
+    }
 
     private void findDeparturesByRouteId(int routeId) {
         if (routeId != 0) {
-            _routeService.findDeparturesByRouteId(new IAction<List<DeparturesByRoute>>() {
+            routeService.findDeparturesByRouteId(new IAction<List<DeparturesByRoute>>() {
                 @Override
                 public void OnCompleted(List<DeparturesByRoute> departuresByRoute) {
                     if (departuresByRoute.size() > 0) {
@@ -107,14 +110,9 @@ public class TimesActivity extends AppCompatActivity {
     }
 
     private void bindDepartures(List<DeparturesByRoute> departuresByRoute) {
-        DeparturesByRouteAdapter weekdayAdapter = new DeparturesByRouteAdapter(getWeekdaysList(departuresByRoute), activity);
-        setRecyclers(rv_weekday, loader_weekday, weekdayAdapter);
-
-        DeparturesByRouteAdapter saturdayAdapter = new DeparturesByRouteAdapter(getSaturdaysList(departuresByRoute), activity);
-        setRecyclers(rv_saturday, loader_saturday, saturdayAdapter);
-
-        DeparturesByRouteAdapter sundayAdapter = new DeparturesByRouteAdapter(getSundaysList(departuresByRoute), activity);
-        setRecyclers(rv_sunday, loader_sunday, sundayAdapter);
+        setRecyclers(rv_weekday, loader_weekday, new DeparturesByRouteAdapter(getList(departuresByRoute, WEEKDAY)));
+        setRecyclers(rv_saturday, loader_saturday, new DeparturesByRouteAdapter(getList(departuresByRoute, SATURDAY)));
+        setRecyclers(rv_sunday, loader_sunday, new DeparturesByRouteAdapter(getList(departuresByRoute, SUNDAY)));
     }
 
     private void setRecyclers(RecyclerView recycler, ProgressBar loader, DeparturesByRouteAdapter adapter) {
@@ -123,35 +121,14 @@ public class TimesActivity extends AppCompatActivity {
         recycler.setVisibility(View.VISIBLE);
     }
 
-
-    private List<DeparturesByRoute> getWeekdaysList(List<DeparturesByRoute> departuresByRoute) {
-        List<DeparturesByRoute> weekdayList = new ArrayList<>();
+    private List<DeparturesByRoute> getList(List<DeparturesByRoute> departuresByRoute, String contains) {
+        List<DeparturesByRoute> departuresByRouteList = new ArrayList<>();
         for (DeparturesByRoute item : departuresByRoute) {
-            if (item.calendar.contains(WEEKDAY))
-                weekdayList.add(item);
+            if (item.calendar.contains(contains))
+                departuresByRouteList.add(item);
         }
 
-        return weekdayList;
-    }
-
-    private List<DeparturesByRoute> getSaturdaysList(List<DeparturesByRoute> departuresByRoute) {
-        List<DeparturesByRoute> saturdayList = new ArrayList<>();
-        for (DeparturesByRoute item : departuresByRoute) {
-            if (item.calendar.contains(SATURDAY))
-                saturdayList.add(item);
-        }
-
-        return saturdayList;
-    }
-
-    private List<DeparturesByRoute> getSundaysList(List<DeparturesByRoute> departuresByRoute) {
-        List<DeparturesByRoute> sundaysList = new ArrayList<>();
-        for (DeparturesByRoute item : departuresByRoute) {
-            if (item.calendar.contains(SUNDAY))
-                sundaysList.add(item);
-        }
-
-        return sundaysList;
+        return departuresByRouteList;
     }
 
 }

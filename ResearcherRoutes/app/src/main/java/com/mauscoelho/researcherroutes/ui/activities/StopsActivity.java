@@ -4,7 +4,6 @@ package com.mauscoelho.researcherroutes.ui.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,6 +23,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -46,6 +46,7 @@ public class StopsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stops);
         route = (Route) getIntent().getSerializableExtra(Extras.ROUTE_OBJECT);
         injectDependencies();
+        injectViews();
         setTitle();
         findStopsByRouteId(route.id);
     }
@@ -53,6 +54,10 @@ public class StopsActivity extends AppCompatActivity {
     @OnClick(R.id.toolbar_back)
     public void backActivity(ImageView toolbar_back) {
         finish();
+    }
+
+    private void injectViews() {
+        ButterKnife.inject(this);
     }
 
     private void injectDependencies() {
@@ -79,7 +84,7 @@ public class StopsActivity extends AppCompatActivity {
     }
 
     private void setRecycler(List<StopsByRoute> stopsByRoutes) {
-        rv_stops.setAdapter(new StopsByRouteAdapter(stopsByRoutes, this));
+        rv_stops.setAdapter(new StopsByRouteAdapter(stopsByRoutes));
         loader_stops.setVisibility(View.GONE);
         rv_stops.setVisibility(View.VISIBLE);
     }

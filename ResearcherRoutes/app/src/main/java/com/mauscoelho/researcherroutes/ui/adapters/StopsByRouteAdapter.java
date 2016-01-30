@@ -13,15 +13,15 @@ import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class StopsByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<StopsByRoute> _stopsByRoute;
-    private Activity _activity;
 
-
-    public StopsByRouteAdapter(List<StopsByRoute> stopsByRoute, Activity activity) {
+    public StopsByRouteAdapter(List<StopsByRoute> stopsByRoute) {
         this._stopsByRoute = stopsByRoute;
-        this._activity = activity;
     }
 
     @Override
@@ -45,49 +45,27 @@ public class StopsByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    public void clearData() {
-        int size = _stopsByRoute.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                _stopsByRoute.remove(0);
-            }
-
-            this.notifyItemRangeRemoved(0, size);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-
-        if (viewType == 0) {
-            View view = LayoutInflater.
-                    from(viewGroup.getContext()).
-                    inflate(R.layout.card_stops, viewGroup, false);
-
-
-            return new RouteViewHolder(view);
-        }
-
-        return null;
+        View view = LayoutInflater.
+                from(viewGroup.getContext()).
+                inflate(R.layout.card_stops, viewGroup, false);
+        return new RouteViewHolder(view);
     }
 
 
     private void bindMatchItem(RouteViewHolder viewHolder, final StopsByRoute stopsByRoute) {
-
         viewHolder.card_stops_name.setText(stopsByRoute.name);
-
     }
 
 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
-        protected TextView card_stops_name;
-
+        @InjectView(R.id.card_stops_name)
+        TextView card_stops_name;
 
         public RouteViewHolder(View v) {
             super(v);
-
-            card_stops_name = (TextView)v.findViewById(R.id.card_stops_name);
-
+            ButterKnife.inject(this, v);
         }
     }
 }

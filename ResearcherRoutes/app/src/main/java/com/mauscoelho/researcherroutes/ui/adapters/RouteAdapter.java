@@ -24,12 +24,12 @@ import butterknife.InjectView;
 public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Route> routes;
-    private Activity _activity;
+    private Activity activity;
 
 
     public RouteAdapter(List<Route> routes, Activity activity) {
         this.routes = routes;
-        this._activity = activity;
+        this.activity = activity;
     }
 
     @Override
@@ -68,27 +68,23 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private void bindMatchItem(RouteViewHolder viewHolder, final Route route) {
         viewHolder.route_shortName.setText(route.shortName);
         viewHolder.route_longName.setText(route.longName);
+        onClickStartActivity(viewHolder.route_times, route, TimesActivity.class);
+        onClickStartActivity(viewHolder.route_stops, route, StopsActivity.class);
+    }
 
-        viewHolder.route_times.setOnClickListener(new View.OnClickListener() {
+    private void onClickStartActivity(TextView textView, final Route route, final Class<?> activityClass) {
+        textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startNewActivity(route, TimesActivity.class);
+                startNewActivity(route, activityClass);
             }
         });
-
-        viewHolder.route_stops.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startNewActivity(route, StopsActivity.class);
-            }
-        });
-
     }
 
     private void startNewActivity(Route route, Class<?> activityClass) {
-        Intent intent = new Intent(_activity, activityClass);
+        Intent intent = new Intent(activity, activityClass);
         intent.putExtra(Extras.ROUTE_OBJECT, route);
-        _activity.startActivity(intent);
+        activity.startActivity(intent);
     }
 
 

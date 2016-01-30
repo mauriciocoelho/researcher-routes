@@ -29,7 +29,7 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
 
     @Inject
-    RouteService _routeService;
+    RouteService routeService;
     @InjectView(R.id.loader)
     ProgressBar loader;
     @InjectView(R.id.rv_route)
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         nothing_found.setVisibility(View.GONE);
         loader.setVisibility(View.VISIBLE);
 
-        _routeService.findRoutesByStopName(new IAction<List<Route>>() {
+        routeService.findRoutesByStopName(new IAction<List<Route>>() {
             @Override
             public void OnCompleted(List<Route> routes) {
                 loader.setVisibility(View.GONE);
