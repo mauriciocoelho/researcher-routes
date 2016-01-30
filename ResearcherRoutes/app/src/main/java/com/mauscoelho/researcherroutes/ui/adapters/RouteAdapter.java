@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
+import com.mauscoelho.researcherroutes.network.Extras;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.ui.activities.StopsActivity;
 import com.mauscoelho.researcherroutes.ui.activities.TimesActivity;
@@ -17,14 +18,17 @@ import com.mauscoelho.researcherroutes.ui.activities.TimesActivity;
 import java.io.Serializable;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Route> _routes;
+    private List<Route> routes;
     private Activity _activity;
 
 
     public RouteAdapter(List<Route> routes, Activity activity) {
-        this._routes = routes;
+        this.routes = routes;
         this._activity = activity;
     }
 
@@ -35,12 +39,12 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return _routes.size();
+        return routes.size();
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        Route route = _routes.get(position);
+        Route route = routes.get(position);
         int viewType = getItemViewType(position);
         switch (viewType) {
             case 0:
@@ -49,29 +53,14 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public void clearData() {
-        int size = _routes.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                _routes.remove(0);
-            }
-
-            this.notifyItemRangeRemoved(0, size);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-
         if (viewType == 0) {
             View view = LayoutInflater.
                     from(viewGroup.getContext()).
                     inflate(R.layout.card_route, viewGroup, false);
-
-
             return new RouteViewHolder(view);
         }
-
         return null;
     }
 
@@ -83,39 +72,40 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         viewHolder.route_times.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(_activity, TimesActivity.class);
-                intent.putExtra("route", (Serializable) route);
-                _activity.startActivity(intent);
+                startNewActivity(route, TimesActivity.class);
             }
         });
 
         viewHolder.route_stops.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(_activity ,StopsActivity.class);
-                intent.putExtra("route", (Serializable)route);
-                _activity.startActivity(intent);
+                startNewActivity(route, StopsActivity.class);
             }
         });
 
     }
 
+    private void startNewActivity(Route route, Class<?> activityClass) {
+        Intent intent = new Intent(_activity, activityClass);
+        intent.putExtra(Extras.ROUTE_OBJECT, route);
+        _activity.startActivity(intent);
+    }
+
 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
-        protected TextView route_shortName;
-        protected TextView route_longName;
-        protected TextView route_times;
-        protected TextView route_stops;
+        @InjectView(R.id.route_shortName)
+        TextView route_shortName;
+        @InjectView(R.id.route_longName)
+        TextView route_longName;
+        @InjectView(R.id.route_times)
+        TextView route_times;
+        @InjectView(R.id.route_stops)
+        TextView route_stops;
 
 
         public RouteViewHolder(View v) {
             super(v);
-
-            route_shortName = (TextView)v.findViewById(R.id.route_shortName);
-            route_longName = (TextView)v.findViewById(R.id.route_longName);
-            route_times = (TextView)v.findViewById(R.id.route_times);
-            route_stops = (TextView)v.findViewById(R.id.route_stops);
-
+            ButterKnife.inject(this, v);
         }
     }
 }
