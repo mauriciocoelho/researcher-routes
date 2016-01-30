@@ -7,9 +7,4 @@ public final class Endpoints {
     public static final String FIND_STOPS_BY_ROUTEID = "https://api.appglu.com/v1/queries/findStopsByRouteId/run";
     public static final String FIND_DEPARTURES_BY_ROUTEID = "https://api.appglu.com/v1/queries/findDeparturesByRouteId/run";
 
-
-
-
-
-
 }

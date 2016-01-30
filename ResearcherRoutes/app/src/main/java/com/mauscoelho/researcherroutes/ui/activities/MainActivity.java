@@ -1,9 +1,7 @@
 package com.mauscoelho.researcherroutes.ui.activities;
 
-import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -24,78 +22,68 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 public class MainActivity extends AppCompatActivity {
 
     @Inject
-    RouteService _routeService;
-
-    private ProgressBar loader;
-    private RecyclerView rv_route;
-    private Activity activity = this;
-    private RouteAdapter routeAdapter = null;
-    private Toolbar toolbar;
-    private EditText toolbar_text;
-    private TextView nothing_found;
-
+    RouteService routeService;
+    @InjectView(R.id.loader)
+    ProgressBar loader;
+    @InjectView(R.id.rv_route)
+    RecyclerView rv_route;
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
+    @InjectView(R.id.toolbar_text)
+    EditText toolbar_text;
+    @InjectView(R.id.nothing_found)
+    TextView nothing_found;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        injectDependencies();
+        injectViews();
+    }
 
+    private void injectDependencies() {
         IRouteServiceComponent routeServiceComponent = DaggerIRouteServiceComponent.create();
         routeServiceComponent.injectMainActivity(this);
-
-        FindById();
-        SetToolbar();
     }
 
-    private void FindById() {
-        rv_route = (RecyclerView) findViewById(R.id.rv_route);
-        loader = (ProgressBar) findViewById(R.id.loader);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        nothing_found = (TextView)findViewById(R.id.nothing_found);
+    private void injectViews() {
+        ButterKnife.inject(this);
     }
 
-    private void SetToolbar() {
-        View view = toolbar.getRootView();
-        ImageView toolbar_search = (ImageView) view.findViewById(R.id.toolbar_search);
-        toolbar_text = (EditText) view.findViewById(R.id.toolbar_text);
-        toolbar_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchRoute(toolbar_text.getText().toString());
-            }
-        });
-
+    @OnClick(R.id.toolbar_search)
+    public void executeSearch(ImageView toolbar_search) {
+        searchRoute(toolbar_text.getText().toString());
     }
 
     private void searchRoute(String stopName) {
-        if (!stopName.isEmpty()) {
-            nothing_found.setVisibility(View.GONE);
-            loader.setVisibility(View.VISIBLE);
-            _routeService.findRoutesByStopName(new IAction<List<Route>>() {
-                @Override
-                public void OnCompleted(List<Route> routes) {
-                    loader.setVisibility(View.GONE);
+        nothing_found.setVisibility(View.GONE);
+        loader.setVisibility(View.VISIBLE);
 
-                    if (routes.size() == 0 & routeAdapter != null) {
-                        routeAdapter.clearData();
-                        nothing_found.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        nothing_found.setVisibility(View.GONE);
-                        routeAdapter = new RouteAdapter(routes, activity);
-                        rv_route.setAdapter(routeAdapter);
-                    }
-                }
+        routeService.getRoutes(new IAction<List<Route>>() {
+            @Override
+            public void OnCompleted(List<Route> routes) {
+                loader.setVisibility(View.GONE);
+                setRecycler(routes);
+            }
 
-                @Override
-                public void OnError(List<Route> routes) {
-                    loader.setVisibility(View.GONE);
-                    nothing_found.setVisibility(View.VISIBLE);
-                }
-            }, stopName);
-        }
+            @Override
+            public void OnError(List<Route> routes) {
+                loader.setVisibility(View.GONE);
+                nothing_found.setVisibility(View.VISIBLE);
+            }
+        }, stopName);
+    }
+
+    private void setRecycler(List<Route> routes) {
+        rv_route.setAdapter(new RouteAdapter(routes, this));
     }
 }
+

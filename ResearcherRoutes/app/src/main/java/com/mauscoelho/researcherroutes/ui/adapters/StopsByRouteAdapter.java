@@ -1,7 +1,6 @@
 package com.mauscoelho.researcherroutes.ui.adapters;
 
 
-import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +8,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
-import com.mauscoelho.researcherroutes.network.models.StopsByRoute;
+import com.mauscoelho.researcherroutes.network.models.Stop;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class StopsByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<StopsByRoute> _stopsByRoute;
-    private Activity _activity;
+    private List<Stop> _stop;
 
-
-    public StopsByRouteAdapter(List<StopsByRoute> stopsByRoute, Activity activity) {
-        this._stopsByRoute = stopsByRoute;
-        this._activity = activity;
+    public StopsByRouteAdapter(List<Stop> stop) {
+        this._stop = stop;
     }
 
     @Override
@@ -31,63 +30,41 @@ public class StopsByRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return _stopsByRoute.size();
+        return _stop.size();
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        StopsByRoute stopsByRoute = _stopsByRoute.get(position);
+        Stop stop = _stop.get(position);
         int viewType = getItemViewType(position);
         switch (viewType) {
             case 0:
-                bindMatchItem((RouteViewHolder) viewHolder, stopsByRoute);
+                bindMatchItem((RouteViewHolder) viewHolder, stop);
                 break;
-        }
-    }
-
-    public void clearData() {
-        int size = _stopsByRoute.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                _stopsByRoute.remove(0);
-            }
-
-            this.notifyItemRangeRemoved(0, size);
         }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-
-        if (viewType == 0) {
-            View view = LayoutInflater.
-                    from(viewGroup.getContext()).
-                    inflate(R.layout.card_stops, viewGroup, false);
-
-
-            return new RouteViewHolder(view);
-        }
-
-        return null;
+        View view = LayoutInflater.
+                from(viewGroup.getContext()).
+                inflate(R.layout.card_stops, viewGroup, false);
+        return new RouteViewHolder(view);
     }
 
 
-    private void bindMatchItem(RouteViewHolder viewHolder, final StopsByRoute stopsByRoute) {
-
-        viewHolder.card_stops_name.setText(stopsByRoute.name);
-
+    private void bindMatchItem(RouteViewHolder viewHolder, final Stop stop) {
+        viewHolder.card_stops_name.setText(stop.name);
     }
 
 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
-        protected TextView card_stops_name;
-
+        @InjectView(R.id.card_stops_name)
+        TextView card_stops_name;
 
         public RouteViewHolder(View v) {
             super(v);
-
-            card_stops_name = (TextView)v.findViewById(R.id.card_stops_name);
-
+            ButterKnife.inject(this, v);
         }
     }
 }
