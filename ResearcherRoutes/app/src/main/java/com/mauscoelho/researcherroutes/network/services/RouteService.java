@@ -11,6 +11,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.mauscoelho.researcherroutes.App;
 import com.mauscoelho.researcherroutes.network.Endpoints;
+import com.mauscoelho.researcherroutes.network.UtilityHelper;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.Stop;
@@ -28,24 +29,22 @@ import javax.inject.Inject;
 public class RouteService {
 
     private Gson gson;
+    private UtilityHelper utilityHelper;
 
     @Inject
-    public RouteService(Gson gson) {
+    public RouteService(Gson gson, UtilityHelper utilityHelper) {
         this.gson = gson;
+        this.utilityHelper = utilityHelper;
     }
 
     public void getRoutes(final IAction<Route[]> callback, String stopName) {
-        JSONObject jsonObject = getJsonObjectByStopName(stopName);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_ROUTES_BY_STOPNAME, jsonObject,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+                Endpoints.FIND_ROUTES_BY_STOPNAME,
+                utilityHelper.getJsonObjectByStopName(stopName),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        JSONArray jsonArray = null;
-                        try {
-                            jsonArray = jsonObject.getJSONArray("rows");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        JSONArray jsonArray = utilityHelper.getJsonArray(jsonObject);
                         Route[] routes = gson.fromJson(jsonArray.toString(), Route[].class);
                         callback.OnCompleted(routes);
                     }
@@ -64,18 +63,16 @@ public class RouteService {
         App.getsInstance().getmRequestQueue().add(request);
     }
 
+
+
     public void getStops(final IAction<Stop[]> callback, int routeId) {
-        JSONObject jsonObject = getJsonRouteId(routeId);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_STOPS_BY_ROUTEID, jsonObject,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+                Endpoints.FIND_STOPS_BY_ROUTEID,
+                utilityHelper.getJsonRouteId(routeId),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        JSONArray jsonArray = null;
-                        try {
-                            jsonArray = jsonObject.getJSONArray("rows");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        JSONArray jsonArray = utilityHelper.getJsonArray(jsonObject);
                         Stop[] stops = gson.fromJson(jsonArray.toString(), Stop[].class);
                         callback.OnCompleted(stops);
                     }
@@ -95,17 +92,14 @@ public class RouteService {
     }
 
     public void getTimes(final IAction<Time[]> callback, int routeId) {
-        JSONObject jsonObject = getJsonRouteId(routeId);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_DEPARTURES_BY_ROUTEID, jsonObject,
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+                Endpoints.FIND_DEPARTURES_BY_ROUTEID,
+                utilityHelper.getJsonRouteId(routeId),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        JSONArray jsonArray = null;
-                        try {
-                            jsonArray = jsonObject.getJSONArray("rows");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        JSONArray jsonArray = utilityHelper.getJsonArray(jsonObject);
                         Time[] times = gson.fromJson(jsonArray.toString(), Time[].class);
                         callback.OnCompleted(times);
                     }
@@ -127,38 +121,11 @@ public class RouteService {
 
     @NonNull
     private Map<String, String> getMapHeaders() {
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<>();
         params.put("X-AppGlu-Environment", "staging");
         params.put("Authorization", "Basic V0tENE43WU1BMXVpTThWOkR0ZFR0ek1MUWxBMGhrMkMxWWk1cEx5VklsQVE2OA==");
         return params;
     }
 
-    @NonNull
-    private JSONObject getJsonObjectByStopName(String value)  {
-        try {
-            return new JSONObject("{\n" +
-                    "\"params\": {\n" +
-                    "\"stopName\": \"%" + value + "%\"\n" +
-                    "}\n" +
-                    "}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new JSONObject();
-    }
-
-    @NonNull
-    private JSONObject getJsonRouteId(int value)  {
-        try {
-            return new JSONObject("{\n" +
-                    "\"params\": {\n" +
-                    "\"routeId\": "+ value +" \n" +
-                    "}\n" +
-                    "}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new JSONObject();
-    }
 
 }
