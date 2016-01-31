@@ -8,40 +8,45 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
 import com.mauscoelho.researcherroutes.App;
 import com.mauscoelho.researcherroutes.network.Endpoints;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
-import com.mauscoelho.researcherroutes.network.models.Time;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.Stop;
-import com.mauscoelho.researcherroutes.network.parsers.Parser;
+import com.mauscoelho.researcherroutes.network.models.Time;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 public class RouteService {
 
-    private Parser parserCommand;
+    private Gson gson;
 
     @Inject
-    public RouteService(Parser parserCommand) {
-        this.parserCommand = parserCommand;
+    public RouteService(Gson gson) {
+        this.gson = gson;
     }
 
-    public void getRoutes(final IAction<List<Route>> callback, String stopName) {
+    public void getRoutes(final IAction<Route[]> callback, String stopName) {
         JSONObject jsonObject = getJsonObjectByStopName(stopName);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_ROUTES_BY_STOPNAME, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-
-                        List<Route> routes = parserCommand.parseRoutes(jsonObject);
+                        JSONArray jsonArray = null;
+                        try {
+                            jsonArray = jsonObject.getJSONArray("rows");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Route[] routes = gson.fromJson(jsonArray.toString(), Route[].class);
                         callback.OnCompleted(routes);
                     }
                 }, new Response.ErrorListener() {
@@ -59,14 +64,20 @@ public class RouteService {
         App.getsInstance().getmRequestQueue().add(request);
     }
 
-    public void getStops(final IAction<List<Stop>> callback, int routeId) {
+    public void getStops(final IAction<Stop[]> callback, int routeId) {
         JSONObject jsonObject = getJsonRouteId(routeId);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_STOPS_BY_ROUTEID, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        List<Stop> routes = parserCommand.parseStops(jsonObject);
-                        callback.OnCompleted(routes);
+                        JSONArray jsonArray = null;
+                        try {
+                            jsonArray = jsonObject.getJSONArray("rows");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Stop[] stops = gson.fromJson(jsonArray.toString(), Stop[].class);
+                        callback.OnCompleted(stops);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -83,14 +94,20 @@ public class RouteService {
         App.getsInstance().getmRequestQueue().add(request);
     }
 
-    public void getTimes(final IAction<List<Time>> callback, int routeId) {
+    public void getTimes(final IAction<Time[]> callback, int routeId) {
         JSONObject jsonObject = getJsonRouteId(routeId);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_DEPARTURES_BY_ROUTEID, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        List<Time> time = parserCommand.parseTimes(jsonObject);
-                        callback.OnCompleted(time);
+                        JSONArray jsonArray = null;
+                        try {
+                            jsonArray = jsonObject.getJSONArray("rows");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Time[] times = gson.fromJson(jsonArray.toString(), Time[].class);
+                        callback.OnCompleted(times);
                     }
                 }, new Response.ErrorListener() {
             @Override

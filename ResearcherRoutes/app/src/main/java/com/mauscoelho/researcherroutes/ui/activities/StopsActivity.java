@@ -19,7 +19,8 @@ import com.mauscoelho.researcherroutes.network.models.Stop;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
 import com.mauscoelho.researcherroutes.ui.adapters.StopsByRouteAdapter;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -70,21 +71,21 @@ public class StopsActivity extends AppCompatActivity {
     }
 
     private void findStopsByRouteId(int routeId) {
-        _routeService.getStops(new IAction<List<Stop>>() {
+        _routeService.getStops(new IAction<Stop[]>() {
             @Override
-            public void OnCompleted(List<Stop> stops) {
+            public void OnCompleted(Stop[] stops) {
                 setRecycler(stops);
             }
 
             @Override
-            public void OnError(List<Stop> stops) {
+            public void OnError(Stop[] stops) {
                 loader_stops.setVisibility(View.GONE);
             }
         }, routeId);
     }
 
-    private void setRecycler(List<Stop> stops) {
-        rv_stops.setAdapter(new StopsByRouteAdapter(stops));
+    private void setRecycler(Stop[] stops) {
+        rv_stops.setAdapter(new StopsByRouteAdapter(new ArrayList<>(Arrays.asList(stops))));
         loader_stops.setVisibility(View.GONE);
         rv_stops.setVisibility(View.VISIBLE);
     }

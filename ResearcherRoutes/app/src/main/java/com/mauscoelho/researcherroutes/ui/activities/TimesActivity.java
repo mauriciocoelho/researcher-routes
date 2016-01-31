@@ -20,6 +20,7 @@ import com.mauscoelho.researcherroutes.network.services.RouteService;
 import com.mauscoelho.researcherroutes.ui.adapters.DeparturesByRouteAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -84,16 +85,16 @@ public class TimesActivity extends AppCompatActivity {
 
     private void findDeparturesByRouteId(int routeId) {
         if (routeId != 0) {
-            routeService.getTimes(new IAction<List<Time>>() {
+            routeService.getTimes(new IAction<Time[]>() {
                 @Override
-                public void OnCompleted(List<Time> time) {
-                    if (time.size() > 0) {
-                        bindDepartures(time);
+                public void OnCompleted(Time[] times) {
+                    if (times.length > 0) {
+                        bindDepartures(times);
                     }
                 }
 
                 @Override
-                public void OnError(List<Time> time) {
+                public void OnError(Time[] time) {
                     loader_weekday.setVisibility(View.GONE);
                     loader_saturday.setVisibility(View.GONE);
                     loader_sunday.setVisibility(View.GONE);
@@ -102,10 +103,11 @@ public class TimesActivity extends AppCompatActivity {
         }
     }
 
-    private void bindDepartures(List<Time> time) {
-        setRecyclers(rv_weekday, loader_weekday, new DeparturesByRouteAdapter(getList(time, WEEKDAY)));
-        setRecyclers(rv_saturday, loader_saturday, new DeparturesByRouteAdapter(getList(time, SATURDAY)));
-        setRecyclers(rv_sunday, loader_sunday, new DeparturesByRouteAdapter(getList(time, SUNDAY)));
+    private void bindDepartures(Time[] times) {
+        ArrayList<Time> timeArrayList = new ArrayList<>(Arrays.asList(times));
+        setRecyclers(rv_weekday, loader_weekday, new DeparturesByRouteAdapter(getList(timeArrayList, WEEKDAY)));
+        setRecyclers(rv_saturday, loader_saturday, new DeparturesByRouteAdapter(getList(timeArrayList, SATURDAY)));
+        setRecyclers(rv_sunday, loader_sunday, new DeparturesByRouteAdapter(getList(timeArrayList, SUNDAY)));
     }
 
     private void setRecyclers(RecyclerView recycler, ProgressBar loader, DeparturesByRouteAdapter adapter) {
