@@ -14,7 +14,7 @@ import org.robolectric.RobolectricTestRunner;
 
 
 @RunWith(RobolectricTestRunner.class)
-public class ParserCommandTest {
+public class UtilityHelperTest {
 
     UtilityHelper utilityHelper;
 
