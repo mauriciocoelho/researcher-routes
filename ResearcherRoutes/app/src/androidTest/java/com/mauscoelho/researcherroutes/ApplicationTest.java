@@ -2,6 +2,7 @@ package com.mauscoelho.researcherroutes;
 
 import android.test.ApplicationTestCase;
 
+import com.mauscoelho.researcherroutes.settings.App;
 
 
 /**

@@ -18,7 +18,8 @@ import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.services.RouteService;
 import com.mauscoelho.researcherroutes.ui.adapters.RouteAdapter;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -67,23 +68,23 @@ public class MainActivity extends AppCompatActivity {
         nothing_found.setVisibility(View.GONE);
         loader.setVisibility(View.VISIBLE);
 
-        routeService.getRoutes(new IAction<List<Route>>() {
+        routeService.getRoutes(new IAction<Route[]>() {
             @Override
-            public void OnCompleted(List<Route> routes) {
+            public void OnCompleted(Route[] routes) {
                 loader.setVisibility(View.GONE);
                 setRecycler(routes);
             }
 
             @Override
-            public void OnError(List<Route> routes) {
+            public void OnError(Route[] routes) {
                 loader.setVisibility(View.GONE);
                 nothing_found.setVisibility(View.VISIBLE);
             }
         }, stopName);
     }
 
-    private void setRecycler(List<Route> routes) {
-        rv_route.setAdapter(new RouteAdapter(routes, this));
+    private void setRecycler(Route[] routes) {
+        rv_route.setAdapter(new RouteAdapter(new ArrayList<>(Arrays.asList(routes)), this));
     }
 }
 

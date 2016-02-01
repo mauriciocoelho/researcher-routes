@@ -1,4 +1,4 @@
-package com.mauscoelho.researcherroutes;
+package com.mauscoelho.researcherroutes.settings;
 
 import android.app.Application;
 

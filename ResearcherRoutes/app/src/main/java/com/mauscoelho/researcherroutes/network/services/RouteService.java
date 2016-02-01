@@ -1,147 +1,97 @@
 package com.mauscoelho.researcherroutes.network.services;
 
 
-import android.support.annotation.NonNull;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.mauscoelho.researcherroutes.App;
-import com.mauscoelho.researcherroutes.network.Endpoints;
+import com.mauscoelho.researcherroutes.network.parsers.RouteParser;
+import com.mauscoelho.researcherroutes.network.parsers.StopsParser;
+import com.mauscoelho.researcherroutes.network.parsers.TimesParser;
+import com.mauscoelho.researcherroutes.settings.App;
+import com.mauscoelho.researcherroutes.network.util.Endpoints;
+import com.mauscoelho.researcherroutes.settings.JsonObjectWithAuthRequest;
+import com.mauscoelho.researcherroutes.network.util.UtilityHelper;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
-import com.mauscoelho.researcherroutes.network.models.Time;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.Stop;
-import com.mauscoelho.researcherroutes.network.parsers.Parser;
+import com.mauscoelho.researcherroutes.network.models.Time;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 public class RouteService {
 
-    private Parser parserCommand;
+    private UtilityHelper utilityHelper;
+    private RouteParser routeParser;
+    private StopsParser stopsParser;
+    private TimesParser timesParser;
 
     @Inject
-    public RouteService(Parser parserCommand) {
-        this.parserCommand = parserCommand;
+    public RouteService(UtilityHelper utilityHelper, RouteParser routeParser, StopsParser stopsParser, TimesParser timesParser) {
+        this.utilityHelper = utilityHelper;
+        this.routeParser= routeParser;
+        this.stopsParser = stopsParser;
+        this.timesParser = timesParser;
     }
 
-    public void getRoutes(final IAction<List<Route>> callback, String stopName) {
-        JSONObject jsonObject = getJsonObjectByStopName(stopName);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_ROUTES_BY_STOPNAME, jsonObject,
+    public void getRoutes(final IAction<Route[]> callback, String stopName) {
+        JsonObjectWithAuthRequest request = new JsonObjectWithAuthRequest(Request.Method.POST,
+                Endpoints.FIND_ROUTES_BY_STOPNAME,
+                utilityHelper.getJsonByStopName(stopName),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-
-                        List<Route> routes = parserCommand.parseRoutes(jsonObject);
-                        callback.OnCompleted(routes);
+                        callback.OnCompleted(routeParser.convertToArray(jsonObject));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 callback.OnError(null);
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                return getMapHeaders();
-            }
-        };
-
+        });
         App.getsInstance().getmRequestQueue().add(request);
     }
 
-    public void getStops(final IAction<List<Stop>> callback, int routeId) {
-        JSONObject jsonObject = getJsonRouteId(routeId);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_STOPS_BY_ROUTEID, jsonObject,
+
+
+    public void getStops(final IAction<Stop[]> callback, int routeId) {
+        JsonObjectWithAuthRequest request = new JsonObjectWithAuthRequest(Request.Method.POST,
+                Endpoints.FIND_STOPS_BY_ROUTEID,
+                utilityHelper.getJsonRouteId(routeId),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        List<Stop> routes = parserCommand.parseStops(jsonObject);
-                        callback.OnCompleted(routes);
+                        callback.OnCompleted(stopsParser.convertToArray(jsonObject));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 callback.OnError(null);
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                return getMapHeaders();
-            }
-        };
+        });
 
         App.getsInstance().getmRequestQueue().add(request);
     }
 
-    public void getTimes(final IAction<List<Time>> callback, int routeId) {
-        JSONObject jsonObject = getJsonRouteId(routeId);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Endpoints.FIND_DEPARTURES_BY_ROUTEID, jsonObject,
+    public void getTimes(final IAction<Time[]> callback, int routeId) {
+
+        JsonObjectWithAuthRequest request = new JsonObjectWithAuthRequest(Request.Method.POST,
+                Endpoints.FIND_DEPARTURES_BY_ROUTEID,
+                utilityHelper.getJsonRouteId(routeId),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        List<Time> time = parserCommand.parseTimes(jsonObject);
-                        callback.OnCompleted(time);
+                        callback.OnCompleted(timesParser.convertToArray(jsonObject));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 callback.OnError(null);
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                return getMapHeaders();
-            }
-        };
+        });
 
         App.getsInstance().getmRequestQueue().add(request);
-    }
-
-
-    @NonNull
-    private Map<String, String> getMapHeaders() {
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("X-AppGlu-Environment", "staging");
-        params.put("Authorization", "Basic V0tENE43WU1BMXVpTThWOkR0ZFR0ek1MUWxBMGhrMkMxWWk1cEx5VklsQVE2OA==");
-        return params;
-    }
-
-    @NonNull
-    private JSONObject getJsonObjectByStopName(String value)  {
-        try {
-            return new JSONObject("{\n" +
-                    "\"params\": {\n" +
-                    "\"stopName\": \"%" + value + "%\"\n" +
-                    "}\n" +
-                    "}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new JSONObject();
-    }
-
-    @NonNull
-    private JSONObject getJsonRouteId(int value)  {
-        try {
-            return new JSONObject("{\n" +
-                    "\"params\": {\n" +
-                    "\"routeId\": "+ value +" \n" +
-                    "}\n" +
-                    "}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new JSONObject();
     }
 
 }
