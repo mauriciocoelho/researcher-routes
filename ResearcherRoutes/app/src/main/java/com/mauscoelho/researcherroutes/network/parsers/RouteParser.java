@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 public class RouteParser {
 
-    UtilityHelper utilityHelper;
-    Gson gson;
+    private UtilityHelper utilityHelper;
+    private Gson gson;
 
     @Inject
     public RouteParser(UtilityHelper utilityHelper, Gson gson) {

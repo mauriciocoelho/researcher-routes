@@ -10,8 +10,8 @@ import org.json.JSONObject;
 import javax.inject.Inject;
 
 public class StopsParser {
-    UtilityHelper utilityHelper;
-    Gson gson;
+    private UtilityHelper utilityHelper;
+    private Gson gson;
 
     @Inject
     public StopsParser(UtilityHelper utilityHelper, Gson gson) {

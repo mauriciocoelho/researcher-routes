@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import javax.inject.Inject;
 
 public class TimesParser {
-    UtilityHelper utilityHelper;
-    Gson gson;
+    private UtilityHelper utilityHelper;
+    private Gson gson;
 
     @Inject
     public TimesParser(UtilityHelper utilityHelper, Gson gson) {
