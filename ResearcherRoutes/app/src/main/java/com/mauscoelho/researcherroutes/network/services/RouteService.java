@@ -4,7 +4,6 @@ package com.mauscoelho.researcherroutes.network.services;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 import com.mauscoelho.researcherroutes.network.parsers.RouteParser;
 import com.mauscoelho.researcherroutes.network.parsers.StopsParser;
 import com.mauscoelho.researcherroutes.network.parsers.TimesParser;
@@ -17,7 +16,6 @@ import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.Stop;
 import com.mauscoelho.researcherroutes.network.models.Time;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
@@ -40,7 +38,7 @@ public class RouteService {
     public void getRoutes(final IAction<Route[]> callback, String stopName) {
         JsonObjectWithAuthRequest request = new JsonObjectWithAuthRequest(Request.Method.POST,
                 Endpoints.FIND_ROUTES_BY_STOPNAME,
-                utilityHelper.getJsonObjectByStopName(stopName),
+                utilityHelper.getJsonByStopName(stopName),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {

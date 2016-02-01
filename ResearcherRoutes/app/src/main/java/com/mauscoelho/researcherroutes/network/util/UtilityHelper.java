@@ -16,7 +16,7 @@ public class UtilityHelper {
     }
 
     @NonNull
-    public JSONObject getJsonObjectByStopName(String value)  {
+    public JSONObject getJsonByStopName(String value)  {
         if(value.isEmpty())
             throw new NullPointerException("parameter value is null");
         try {

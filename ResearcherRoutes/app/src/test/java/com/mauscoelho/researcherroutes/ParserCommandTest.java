@@ -24,16 +24,15 @@ public class ParserCommandTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void getJsonObjectByStopName_whenStopNameIsNull_returnsNullPointerException() {
-
+    public void getJsonByStopName_whenStopNameIsNull_returnsNullPointerException() {
         final String STOP_NAME_NULL = null;
 
-        JSONObject jsonObject = utilityHelper.getJsonObjectByStopName(STOP_NAME_NULL);
+        JSONObject jsonObject = utilityHelper.getJsonByStopName(STOP_NAME_NULL);
 
     }
 
     @Test
-    public void getJsonObjectByStopName_whenStopNameIsValid_returnsJsonObject() throws JSONException {
+    public void getJsonByStopName_whenStopNameIsValid_returnsJsonObject() throws JSONException {
         final String FAILDED_TEST_MESSAGE = "JSONObject recovered should equal the expected JSONObject";
         final String STOP_NAME_VALID = "18";
 
@@ -43,11 +42,25 @@ public class ParserCommandTest {
                 "}\n" +
                 "}");
 
-        JSONObject actualJSONObject = utilityHelper.getJsonObjectByStopName(STOP_NAME_VALID);
-
+        JSONObject actualJSONObject = utilityHelper.getJsonByStopName(STOP_NAME_VALID);
         Assert.assertEquals(FAILDED_TEST_MESSAGE, expectedJSONObject.toString(), actualJSONObject.toString());
     }
 
+
+    @Test
+    public void getJsonObjectByRouteID_whenRouteIdIsValid_returnsJsonObject() throws JSONException {
+        final String FAILDED_TEST_MESSAGE = "JSONObject recovered should equal the expected JSONObject";
+        final int ROUTE_ID_VALID = 18;
+
+        JSONObject expectedJSONObject = new JSONObject("{\n" +
+                "\"params\": {\n" +
+                "\"routeId\": " + ROUTE_ID_VALID + "\n" +
+                "}\n" +
+                "}");
+
+        JSONObject actualJSONObject = utilityHelper.getJsonRouteId(ROUTE_ID_VALID);
+        Assert.assertEquals(FAILDED_TEST_MESSAGE, expectedJSONObject.toString(), actualJSONObject.toString());
+    }
 
 
 
