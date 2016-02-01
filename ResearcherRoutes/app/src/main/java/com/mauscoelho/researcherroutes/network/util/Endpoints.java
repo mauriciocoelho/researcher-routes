@@ -1,4 +1,4 @@
-package com.mauscoelho.researcherroutes.network;
+package com.mauscoelho.researcherroutes.network.util;
 
 
 public final class Endpoints {

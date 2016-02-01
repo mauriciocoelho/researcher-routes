@@ -10,7 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
-import com.mauscoelho.researcherroutes.network.Extras;
+import com.mauscoelho.researcherroutes.network.util.Extras;
 import com.mauscoelho.researcherroutes.network.interfaces.DaggerIRouteServiceComponent;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
 import com.mauscoelho.researcherroutes.network.interfaces.IRouteServiceComponent;

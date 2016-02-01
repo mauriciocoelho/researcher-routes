@@ -10,12 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mauscoelho.researcherroutes.R;
-import com.mauscoelho.researcherroutes.network.Extras;
+import com.mauscoelho.researcherroutes.network.util.Extras;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.ui.activities.StopsActivity;
 import com.mauscoelho.researcherroutes.ui.activities.TimesActivity;
 
-import java.io.Serializable;
 import java.util.List;
 
 import butterknife.ButterKnife;

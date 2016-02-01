@@ -5,10 +5,13 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
-import com.mauscoelho.researcherroutes.setting.App;
-import com.mauscoelho.researcherroutes.network.Endpoints;
-import com.mauscoelho.researcherroutes.setting.JsonObjectWithAuthRequest;
-import com.mauscoelho.researcherroutes.network.UtilityHelper;
+import com.mauscoelho.researcherroutes.network.parsers.RouteParser;
+import com.mauscoelho.researcherroutes.network.parsers.StopsParser;
+import com.mauscoelho.researcherroutes.network.parsers.TimesParser;
+import com.mauscoelho.researcherroutes.settings.App;
+import com.mauscoelho.researcherroutes.network.util.Endpoints;
+import com.mauscoelho.researcherroutes.settings.JsonObjectWithAuthRequest;
+import com.mauscoelho.researcherroutes.network.util.UtilityHelper;
 import com.mauscoelho.researcherroutes.network.interfaces.IAction;
 import com.mauscoelho.researcherroutes.network.models.Route;
 import com.mauscoelho.researcherroutes.network.models.Stop;
@@ -21,13 +24,17 @@ import javax.inject.Inject;
 
 public class RouteService {
 
-    private Gson gson;
     private UtilityHelper utilityHelper;
+    private RouteParser routeParser;
+    private StopsParser stopsParser;
+    private TimesParser timesParser;
 
     @Inject
-    public RouteService(Gson gson, UtilityHelper utilityHelper) {
-        this.gson = gson;
+    public RouteService(UtilityHelper utilityHelper, RouteParser routeParser, StopsParser stopsParser, TimesParser timesParser) {
         this.utilityHelper = utilityHelper;
+        this.routeParser= routeParser;
+        this.stopsParser = stopsParser;
+        this.timesParser = timesParser;
     }
 
     public void getRoutes(final IAction<Route[]> callback, String stopName) {
@@ -37,9 +44,7 @@ public class RouteService {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        JSONArray jsonArray = utilityHelper.getJsonArray(jsonObject);
-                        Route[] routes = gson.fromJson(jsonArray.toString(), Route[].class);
-                        callback.OnCompleted(routes);
+                        callback.OnCompleted(routeParser.convertToArray(jsonObject));
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -59,9 +64,7 @@ public class RouteService {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        JSONArray jsonArray = utilityHelper.getJsonArray(jsonObject);
-                        Stop[] stops = gson.fromJson(jsonArray.toString(), Stop[].class);
-                        callback.OnCompleted(stops);
+                        callback.OnCompleted(stopsParser.convertToArray(jsonObject));
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -81,9 +84,7 @@ public class RouteService {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-                        JSONArray jsonArray = utilityHelper.getJsonArray(jsonObject);
-                        Time[] times = gson.fromJson(jsonArray.toString(), Time[].class);
-                        callback.OnCompleted(times);
+                        callback.OnCompleted(timesParser.convertToArray(jsonObject));
                     }
                 }, new Response.ErrorListener() {
             @Override

@@ -1,4 +1,4 @@
-package com.mauscoelho.researcherroutes.network;
+package com.mauscoelho.researcherroutes.network.util;
 
 
 import android.support.annotation.NonNull;
@@ -17,6 +17,8 @@ public class UtilityHelper {
 
     @NonNull
     public JSONObject getJsonObjectByStopName(String value)  {
+        if(value.isEmpty())
+            throw new NullPointerException("parameter value is null");
         try {
             return new JSONObject("{\n" +
                     "\"params\": {\n" +
@@ -52,4 +54,5 @@ public class UtilityHelper {
         }
         return jsonArray;
     }
+
 }
