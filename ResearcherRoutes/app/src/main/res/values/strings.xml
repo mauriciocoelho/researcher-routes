@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ResearcherRoutes</string>
+    <string name="search">Search</string>
+    <string name="detail">DETAIL</string>
+    <string name="longName">LONG NAME:</string>
+    <string name="shortName">SHORT NAME:</string>
+    <string name="loading">LOADING</string>
+    <string name="nothing_found">Nothing found :(</string>
+    <string name="weekday">WEEKDAY</string>
+    <string name="saturday">SATURDAY</string>
+    <string name="sunday">SUNDAY</string>
+    <string name="go_to_maps">GO TO MAPS</string>
+    <string name="times">TIMES</string>
+    <string name="stops">STOPS</string>
+
+
+
+
+</resources>
